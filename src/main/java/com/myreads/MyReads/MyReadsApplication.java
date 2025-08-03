@@ -15,9 +15,6 @@ public class MyReadsApplication {
 
 
 
-
-
-
 	}
 
 }
