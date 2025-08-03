@@ -8,13 +8,6 @@ public class MyReadsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MyReadsApplication.class, args);
-
-
-
-
-
-
-
 	}
 
 }
