@@ -1,5 +1,7 @@
 package com.myreads.MyReads.controllers;
 
+import com.myreads.MyReads.exceptions.InvalidPasswordException;
+import com.myreads.MyReads.exceptions.InvalidUsernameException;
 import com.myreads.MyReads.exceptions.UsernameAlreadyExistsException;
 import com.myreads.MyReads.requests.UserLoginRequest;
 import com.myreads.MyReads.requests.UserRegisterRequest;
@@ -35,13 +37,13 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserLoginRequest loginRequest){
-        String result = userService.login(loginRequest);
-
-        if (result.equals("Login successfully")){
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.badRequest().body(result);
+        try {
+            userService.login(loginRequest);
+        } catch (InvalidUsernameException |InvalidPasswordException exception){
+            return ResponseEntity.badRequest().body(exception.getMessage());
         }
+
+        return ResponseEntity.ok("Login successfully");
     }
 }
 

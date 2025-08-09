@@ -1,5 +1,6 @@
 package com.myreads.MyReads.services;
 
+import com.myreads.MyReads.exceptions.AuthorAlreadyExistsException;
 import com.myreads.MyReads.models.Author;
 import com.myreads.MyReads.repositories.AuthorRepository;
 import com.myreads.MyReads.requests.AuthorCreateRequest;
@@ -14,9 +15,11 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    public Author createAuthor(AuthorCreateRequest authorCreateRequest){
-        Author author = new Author(authorCreateRequest.getName());
+    public void createAuthor(AuthorCreateRequest authorCreateRequest){
 
-        return authorRepository.save(author);
+        if (authorRepository.findByName(authorCreateRequest.getName()).isPresent()){
+            throw new AuthorAlreadyExistsException(authorCreateRequest.getName());
+        }
+         authorRepository.save(new Author(authorCreateRequest.getName()));
     }
 }

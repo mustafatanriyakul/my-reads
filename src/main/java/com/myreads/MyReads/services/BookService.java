@@ -1,6 +1,7 @@
 package com.myreads.MyReads.services;
 
-import com.myreads.MyReads.models.Author;
+import com.myreads.MyReads.exceptions.AuthorNotFoundException;
+import com.myreads.MyReads.exceptions.BookAlreadyExistsException;
 import com.myreads.MyReads.models.Book;
 import com.myreads.MyReads.repositories.AuthorRepository;
 import com.myreads.MyReads.repositories.BookRepository;
@@ -17,13 +18,22 @@ public class BookService {
         this.authorRepository = authorRepository;
     }
 
-    public Book createBook(BookCreateRequest bookCreateRequest) {
-        Author author = authorRepository.findById(bookCreateRequest.getAuthorId()).orElseThrow(() -> new IllegalArgumentException("Author not found with this ID"));
+    public void createBook(BookCreateRequest bookCreateRequest) {
+
+        if (authorRepository.findById(bookCreateRequest.getAuthorId()).isEmpty()) {
+            throw new AuthorNotFoundException(bookCreateRequest.getAuthorId());
+        }
+
+        if (bookRepository.findByTitle(bookCreateRequest.getTitle()).isPresent()){
+            throw new BookAlreadyExistsException(bookCreateRequest.getTitle());
+        }
 
 
-        Book book = new Book(bookCreateRequest.getTitle(), author.getId(), bookCreateRequest.getIsbn(), bookCreateRequest.getDatePublished());
 
-        return bookRepository.save(book);
+        Book book = new Book(bookCreateRequest.getTitle(), bookCreateRequest.getAuthorId(), bookCreateRequest.getIsbn(),
+                bookCreateRequest.getDatePublished());
+
+        bookRepository.save(book);
     }
 
 
