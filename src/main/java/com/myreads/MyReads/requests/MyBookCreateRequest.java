@@ -9,5 +9,4 @@ public class MyBookCreateRequest {
     private Long userId;
     private Long bookId;
     private LocalDate dateRead;
-    private LocalDate dateAdded;
 }

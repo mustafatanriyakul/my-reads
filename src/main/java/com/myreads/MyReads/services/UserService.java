@@ -8,6 +8,10 @@ import com.myreads.MyReads.repositories.UserRepository;
 import com.myreads.MyReads.requests.UserLoginRequest;
 import com.myreads.MyReads.requests.UserRegisterRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+
+import java.util.Optional;
 
 
 @Service
@@ -19,6 +23,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public void register(UserRegisterRequest registerRequest) {
 
@@ -26,19 +31,23 @@ public class UserService {
             throw new UsernameAlreadyExistsException(registerRequest.getUsername());
         }
 
-        User newUser = new User(registerRequest.getUsername(), registerRequest.getPassword());
+        String encodedPassword = encoder.encode(registerRequest.getPassword());
+
+        User newUser = new User(registerRequest.getUsername(),
+                encodedPassword);
 
         userRepository.save(newUser);
     }
 
 
     public void login(UserLoginRequest loginRequest) {
+        Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
 
-        if (userRepository.findByUsername(loginRequest.getUsername()).isEmpty()) {
+        if (user.isEmpty()) {
             throw new InvalidUsernameException(loginRequest.getUsername());
         }
 
-        if (!(userRepository.findByUsername(loginRequest.getUsername()).get().getPassword().equals(loginRequest.getPassword()))) {
+        if (! encoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
             throw new InvalidPasswordException();
         }
     }

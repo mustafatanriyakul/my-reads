@@ -30,7 +30,9 @@ public class BookService {
 
 
 
-        Book book = new Book(bookCreateRequest.getTitle(), bookCreateRequest.getAuthorId(), bookCreateRequest.getIsbn(),
+        Book book = new Book(bookCreateRequest.getTitle(),
+                bookCreateRequest.getAuthorId(),
+                bookCreateRequest.getIsbn(),
                 bookCreateRequest.getDatePublished());
 
         bookRepository.save(book);

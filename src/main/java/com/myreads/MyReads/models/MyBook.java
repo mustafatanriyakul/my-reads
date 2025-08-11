@@ -28,11 +28,11 @@ public class MyBook {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public MyBook(Long userId, Long bookId, LocalDate dateRead, LocalDate dateAdded) {
+    public MyBook(Long userId, Long bookId, LocalDate dateRead) {
         this.userId = userId;
         this.bookId = bookId;
         this.dateRead = dateRead;
-        this.dateAdded = dateAdded;
+        this.dateAdded = LocalDate.now();
     }
 
     public MyBook() {

@@ -14,6 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/mybooks")
 public class MyBookController {
+    public static String BOOK_ADDED = "Book added.";
+    public static String BOOKS_FETCHED = "Book fetched successfully.";
     private final MyBookService myBookService;
 
     public MyBookController(MyBookService myBookService) {
@@ -21,25 +23,25 @@ public class MyBookController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addBookToMybooks(@RequestBody MyBookCreateRequest myBookCreateRequest) {
+    public ResponseEntity<ControllerResponse<String>> addBookToMybooks(@RequestBody MyBookCreateRequest myBookCreateRequest) {
 
         try {
-            myBookService.addBookToMybooks(myBookCreateRequest);
+            myBookService.addBookToMyBooks(myBookCreateRequest);
         } catch (UserNotFoundException | BookNotFoundException exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
 
-        return ResponseEntity.ok("Book added.");
+        return ResponseEntity.ok(new ControllerResponse<>(BOOK_ADDED));
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ControllerResponse> getUsersBook(@PathVariable Long userId) {
+    public ResponseEntity<ControllerResponse<?>> getUsersBook(@PathVariable Long userId) {
 
         try {
-            List<MyBook> myBooks = myBookService.getMybooksOfUser(userId);
+            List<MyBook> myBooks = myBookService.getMyBookByUserId(userId);
 
-            return ResponseEntity.ok(new ControllerResponse("Books fetched successfully",myBooks));
-        }catch (UserNotFoundException exception){
+            return ResponseEntity.ok(new ControllerResponse<>(BOOKS_FETCHED, myBooks));
+        } catch (UserNotFoundException exception) {
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
 

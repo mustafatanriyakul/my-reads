@@ -1,5 +1,6 @@
 package com.myreads.MyReads.controllers;
 
+import com.myreads.MyReads.common.ControllerResponse;
 import com.myreads.MyReads.exceptions.AuthorAlreadyExistsException;
 import com.myreads.MyReads.requests.AuthorCreateRequest;
 import com.myreads.MyReads.services.AuthorService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/authors")
 public class AuthorController {
+    public final String AUTHOR_CREATED_MESSAGE = "Author created.";
     private final AuthorService authorService;
 
     public AuthorController(AuthorService authorService) {
@@ -19,15 +21,15 @@ public class AuthorController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createAuthor(@RequestBody AuthorCreateRequest authorCreateRequest) {
+    public ResponseEntity<ControllerResponse<String>> createAuthor(@RequestBody AuthorCreateRequest authorCreateRequest) {
 
         try {
             authorService.createAuthor(authorCreateRequest);
         } catch (AuthorAlreadyExistsException exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
 
-        return ResponseEntity.ok("Author created.");
+        return ResponseEntity.ok(new ControllerResponse<>(AUTHOR_CREATED_MESSAGE));
 
     }
 }

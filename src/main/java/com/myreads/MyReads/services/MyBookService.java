@@ -23,7 +23,7 @@ public class MyBookService {
         this.userRepository = userRepository;
     }
 
-    public void addBookToMybooks(MyBookCreateRequest myBookCreateRequest) {
+    public void addBookToMyBooks(MyBookCreateRequest myBookCreateRequest) {
 
         if (userRepository.findById(myBookCreateRequest.getUserId()).isEmpty()){
             throw new UserNotFoundException(myBookCreateRequest.getUserId());
@@ -34,11 +34,12 @@ public class MyBookService {
         }
 
 
-        myBookRepository.save(new MyBook(myBookCreateRequest.getUserId(), myBookCreateRequest.getBookId(),
-                myBookCreateRequest.getDateRead(), myBookCreateRequest.getDateAdded()));
+        myBookRepository.save(new MyBook(myBookCreateRequest.getUserId(),
+                myBookCreateRequest.getBookId(),
+                myBookCreateRequest.getDateRead()));
     }
 
-    public List<MyBook> getMybooksOfUser(Long userId) {
+    public List<MyBook> getMyBookByUserId(Long userId) {
 
         if (userRepository.findById(userId).isEmpty()){
             throw new UserNotFoundException(userId);

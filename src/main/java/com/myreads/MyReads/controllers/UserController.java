@@ -1,5 +1,6 @@
 package com.myreads.MyReads.controllers;
 
+import com.myreads.MyReads.common.ControllerResponse;
 import com.myreads.MyReads.exceptions.InvalidPasswordException;
 import com.myreads.MyReads.exceptions.InvalidUsernameException;
 import com.myreads.MyReads.exceptions.UsernameAlreadyExistsException;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
+    public final String USER_REGISTERED = "User registered successfully";
+    public final String USER_LOGGED_IN = "User logged in successfully";
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -24,26 +26,26 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserRegisterRequest registerRequest){
+    public ResponseEntity<ControllerResponse<String>> register(@RequestBody UserRegisterRequest registerRequest){
         try{
             userService.register(registerRequest);
         } catch (UsernameAlreadyExistsException exception){
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
 
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED));
     }
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginRequest loginRequest){
+    public ResponseEntity<ControllerResponse<String>> login(@RequestBody UserLoginRequest loginRequest){
         try {
             userService.login(loginRequest);
         } catch (InvalidUsernameException |InvalidPasswordException exception){
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
 
-        return ResponseEntity.ok("Login successfully");
+        return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN));
     }
 }
 
