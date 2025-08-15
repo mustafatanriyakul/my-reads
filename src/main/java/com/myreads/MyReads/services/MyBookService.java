@@ -1,12 +1,13 @@
 package com.myreads.MyReads.services;
 
 import com.myreads.MyReads.exceptions.BookNotFoundException;
+import com.myreads.MyReads.exceptions.UserAlreadyHasThisBookException;
 import com.myreads.MyReads.exceptions.UserNotFoundException;
 import com.myreads.MyReads.models.MyBook;
 import com.myreads.MyReads.repositories.BookRepository;
 import com.myreads.MyReads.repositories.MyBookRepository;
 import com.myreads.MyReads.repositories.UserRepository;
-import com.myreads.MyReads.requests.MyBookCreateRequest;
+import com.myreads.MyReads.dto.MyBookCreateRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,10 +34,14 @@ public class MyBookService {
             throw new BookNotFoundException(myBookCreateRequest.getBookId());
         }
 
+        if (myBookRepository.existsByUserIdAndBookId(myBookCreateRequest.getUserId(), myBookCreateRequest.getBookId())){
+            throw new UserAlreadyHasThisBookException(myBookCreateRequest.getBookId());
+        }
 
         myBookRepository.save(new MyBook(myBookCreateRequest.getUserId(),
                 myBookCreateRequest.getBookId(),
                 myBookCreateRequest.getDateRead()));
+
     }
 
     public List<MyBook> getMyBookByUserId(Long userId) {

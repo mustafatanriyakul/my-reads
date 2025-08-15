@@ -1,4 +1,4 @@
-package com.myreads.MyReads.requests;
+package com.myreads.MyReads.dto;
 
 import lombok.Data;
 

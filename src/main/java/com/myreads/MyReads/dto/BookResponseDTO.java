@@ -1,15 +1,15 @@
-package com.myreads.MyReads.requests;
+package com.myreads.MyReads.dto;
 
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
-public class BookCreateRequest {
+public class BookResponseDTO {
 
     private String title;
 
-    private Long authorId;
+    private String authorName;
 
     private String isbn;
 

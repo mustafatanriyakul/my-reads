@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface MyBookRepository extends JpaRepository<MyBook, Long> {
     List<MyBook> findByUserId(Long userId);
+
+    boolean existsByUserIdAndBookId(Long userId, Long bookId);
 }

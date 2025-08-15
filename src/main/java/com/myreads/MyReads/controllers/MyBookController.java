@@ -2,9 +2,10 @@ package com.myreads.MyReads.controllers;
 
 import com.myreads.MyReads.common.ControllerResponse;
 import com.myreads.MyReads.exceptions.BookNotFoundException;
+import com.myreads.MyReads.exceptions.UserAlreadyHasThisBookException;
 import com.myreads.MyReads.exceptions.UserNotFoundException;
 import com.myreads.MyReads.models.MyBook;
-import com.myreads.MyReads.requests.MyBookCreateRequest;
+import com.myreads.MyReads.dto.MyBookCreateRequest;
 import com.myreads.MyReads.services.MyBookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class MyBookController {
 
         try {
             myBookService.addBookToMyBooks(myBookCreateRequest);
-        } catch (UserNotFoundException | BookNotFoundException exception) {
+        } catch (UserNotFoundException | BookNotFoundException | UserAlreadyHasThisBookException exception) {
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
 

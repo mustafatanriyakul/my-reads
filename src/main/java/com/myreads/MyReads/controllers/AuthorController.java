@@ -2,7 +2,7 @@ package com.myreads.MyReads.controllers;
 
 import com.myreads.MyReads.common.ControllerResponse;
 import com.myreads.MyReads.exceptions.AuthorAlreadyExistsException;
-import com.myreads.MyReads.requests.AuthorCreateRequest;
+import com.myreads.MyReads.dto.AuthorCreateRequest;
 import com.myreads.MyReads.services.AuthorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

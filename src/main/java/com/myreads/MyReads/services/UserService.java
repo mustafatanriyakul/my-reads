@@ -5,8 +5,8 @@ import com.myreads.MyReads.exceptions.InvalidUsernameException;
 import com.myreads.MyReads.exceptions.UsernameAlreadyExistsException;
 import com.myreads.MyReads.models.User;
 import com.myreads.MyReads.repositories.UserRepository;
-import com.myreads.MyReads.requests.UserLoginRequest;
-import com.myreads.MyReads.requests.UserRegisterRequest;
+import com.myreads.MyReads.dto.UserLoginRequest;
+import com.myreads.MyReads.dto.UserRegisterRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -23,7 +23,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public void register(UserRegisterRequest registerRequest) {
 
