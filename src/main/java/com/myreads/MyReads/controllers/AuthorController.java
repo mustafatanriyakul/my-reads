@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/authors")
+@CrossOrigin
 public class AuthorController {
     public final String AUTHOR_CREATED_MESSAGE = "Author created.";
     private final AuthorService authorService;

@@ -8,13 +8,11 @@ import com.myreads.MyReads.dto.UserLoginRequest;
 import com.myreads.MyReads.dto.UserRegisterRequest;
 import com.myreads.MyReads.services.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin
 public class UserController {
     public final String USER_REGISTERED = "User registered successfully";
     public final String USER_LOGGED_IN = "User logged in successfully";

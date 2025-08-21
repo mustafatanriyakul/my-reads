@@ -32,12 +32,6 @@ public class AuthorService {
         authorRepository.save(new Author(authorCreateRequest.getName()));
     }
 
-    public String getAuthorNameByBookId(Long bookId) {
-        Optional<Book> book = bookRepository.findById(bookId);
-        Optional<Author> author = authorRepository.findById(book.map(Book::getAuthorId).orElse(0L));
-
-        return author.map(Author::getName).orElse("Unknown Author");
-    }
 
     public List<Author> getAllAuthors() {
         return authorRepository.findAll();
@@ -45,22 +39,30 @@ public class AuthorService {
 
     public List<BookResponseDTO> getAuthorBookListByAuthorId(Long authorId) {
 
-        List<Book> bookList = bookRepository.findAllByAuthorId(authorId);
+        List<Book> booksOfAuthor = bookRepository.findAllByAuthorId(authorId);
 
-        List<BookResponseDTO> bookResponseDTOList = new ArrayList<>();
+        List<BookResponseDTO> booksOfAuthorResponse = new ArrayList<>();
 
-        for (Book book : bookList) {
+        for (Book book : booksOfAuthor) {
+
+            Optional<Author> author = authorRepository.findById(book.getAuthorId());
+
+            if (author.isEmpty()){
+                continue;
+            }
+
+            String authorName = author.get().getName();
 
             BookResponseDTO bookResponseDTO = new BookResponseDTO(
                     book.getTitle(),
-                    getAuthorNameByBookId(book.getId()),
+                    authorName,
                     book.getIsbn(),
                     book.getDatePublished()
             );
 
-            bookResponseDTOList.add(bookResponseDTO);
+            booksOfAuthorResponse.add(bookResponseDTO);
         }
 
-        return bookResponseDTOList;
+        return booksOfAuthorResponse;
     }
 }
