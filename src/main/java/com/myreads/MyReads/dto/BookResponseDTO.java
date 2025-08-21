@@ -14,4 +14,12 @@ public class BookResponseDTO {
     private String isbn;
 
     private LocalDate datePublished;
+
+
+    public BookResponseDTO(String title, String authorName, String isbn, LocalDate datePublished) {
+        this.title = title;
+        this.authorName = authorName;
+        this.isbn = isbn;
+        this.datePublished = datePublished;
+    }
 }
