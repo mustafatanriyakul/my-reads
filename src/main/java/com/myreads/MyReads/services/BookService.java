@@ -17,9 +17,12 @@ public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
 
-    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
+    private final AuthorService authorService;
+
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, AuthorService authorService) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
+        this.authorService = authorService;
     }
 
     public void createBook(BookCreateRequest bookCreateRequest) {
@@ -47,20 +50,17 @@ public class BookService {
         List<Book> books = bookRepository.findAll();
 
         for (Book book : books) {
+            String authorName = authorService.getAuthorNameByBookId(book.getId());
 
-            BookResponseDTO bookResponse = new BookResponseDTO();
-
-            bookResponse.setTitle(book.getTitle());
-            String authorName = authorRepository.findById(book.getAuthorId()).get().getName();
-            bookResponse.setAuthorName(authorName);
-            bookResponse.setIsbn(book.getIsbn());
-            bookResponse.setDatePublished(book.getDatePublished());
+            BookResponseDTO bookResponse = new BookResponseDTO(
+                    book.getTitle(),
+                    authorName,
+                    book.getIsbn(),
+                    book.getDatePublished());
 
             bookResponseDTOS.add(bookResponse);
         }
 
         return bookResponseDTOS;
     }
-
-
 }
