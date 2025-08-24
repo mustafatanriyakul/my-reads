@@ -1,14 +1,14 @@
 package com.myreads.MyReads.controllers;
 
 import com.myreads.MyReads.common.ControllerResponse;
+import com.myreads.MyReads.dto.BookResponseDTO;
 import com.myreads.MyReads.exceptions.AuthorAlreadyExistsException;
 import com.myreads.MyReads.dto.AuthorCreateRequest;
 import com.myreads.MyReads.services.AuthorService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/authors")
@@ -31,5 +31,18 @@ public class AuthorController {
 
         return ResponseEntity.ok(new ControllerResponse<>(AUTHOR_CREATED_MESSAGE));
 
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ControllerResponse<?>> getAllAuthors(){
+
+        return ResponseEntity.ok(new ControllerResponse<>(authorService.getAllAuthors()));
+    }
+
+    @GetMapping("/{authorId}")
+    public ResponseEntity<ControllerResponse<?>> getBookListOfAuthor(@PathVariable Long authorId){
+        List<BookResponseDTO> bookList = authorService.getAuthorBookListByAuthorId(authorId);
+
+        return ResponseEntity.ok(new ControllerResponse<>(bookList));
     }
 }
