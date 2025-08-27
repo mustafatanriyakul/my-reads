@@ -34,7 +34,7 @@ public class UserBookController {
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
 
-        return ResponseEntity.ok(new ControllerResponse<>(BOOK_ADDED));
+
     }
 
     @GetMapping("/{userId}")
