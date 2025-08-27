@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class MyBook {
+public class UserBook {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,14 +28,14 @@ public class MyBook {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public MyBook(Long userId, Long bookId, LocalDate dateRead) {
+    public UserBook(Long userId, Long bookId, LocalDate dateRead) {
         this.userId = userId;
         this.bookId = bookId;
         this.dateRead = dateRead;
         this.dateAdded = LocalDate.now();
     }
 
-    public MyBook() {
+    public UserBook() {
 
     }
 }

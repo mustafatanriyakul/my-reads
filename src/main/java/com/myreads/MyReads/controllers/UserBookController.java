@@ -1,12 +1,12 @@
 package com.myreads.MyReads.controllers;
 
 import com.myreads.MyReads.common.ControllerResponse;
-import com.myreads.MyReads.dto.MyBookResponseDTO;
+import com.myreads.MyReads.dto.UserBookResponseDTO;
 import com.myreads.MyReads.exceptions.BookNotFoundException;
 import com.myreads.MyReads.exceptions.UserAlreadyHasThisBookException;
 import com.myreads.MyReads.exceptions.UserNotFoundException;
-import com.myreads.MyReads.dto.MyBookCreateRequest;
-import com.myreads.MyReads.services.MyBookService;
+import com.myreads.MyReads.dto.UserBookCreateRequest;
+import com.myreads.MyReads.services.UserBookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,20 +15,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/mybooks")
 @CrossOrigin
-public class MyBookController {
+public class UserBookController {
     public static String BOOK_ADDED = "Book added.";
     public static String BOOKS_FETCHED = "Book fetched successfully.";
-    private final MyBookService myBookService;
+    private final UserBookService userBookService;
 
-    public MyBookController(MyBookService myBookService) {
-        this.myBookService = myBookService;
+    public UserBookController(UserBookService userBookService) {
+        this.userBookService = userBookService;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ControllerResponse<String>> addBookToMybooks(@RequestBody MyBookCreateRequest myBookCreateRequest) {
+    public ResponseEntity<ControllerResponse<String>> addBookUserBooks(@RequestBody UserBookCreateRequest userBookCreateRequest) {
 
         try {
-            myBookService.addBookToMyBooks(myBookCreateRequest);
+            userBookService.addBookToUserBooks(userBookCreateRequest);
         } catch (UserNotFoundException | BookNotFoundException | UserAlreadyHasThisBookException exception) {
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
@@ -37,12 +37,12 @@ public class MyBookController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ControllerResponse<List<MyBookResponseDTO>>> getUsersBook(@PathVariable Long userId) {
+    public ResponseEntity<ControllerResponse<List<UserBookResponseDTO>>> getUserBooks(@PathVariable Long userId) {
 
         try {
-            List<MyBookResponseDTO> myBookResponseDTOS = myBookService.getMyBooksByUserId(userId);
+            List<UserBookResponseDTO> userBookResponseDTOS = userBookService.getUserBookByUserId(userId);
 
-            return ResponseEntity.ok(new ControllerResponse<>(BOOKS_FETCHED, myBookResponseDTOS));
+            return ResponseEntity.ok(new ControllerResponse<>(BOOKS_FETCHED, userBookResponseDTOS));
         } catch (UserNotFoundException exception) {
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
