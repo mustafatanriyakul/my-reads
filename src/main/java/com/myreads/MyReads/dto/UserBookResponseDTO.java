@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class MyBookResponseDTO {
+public class UserBookResponseDTO {
 
     private String bookTitle;
 
@@ -16,7 +16,7 @@ public class MyBookResponseDTO {
     private LocalDate dateAdded;
 
 
-    public MyBookResponseDTO(String bookTitle, String authorName, LocalDate dateRead, LocalDate dateAdded) {
+    public UserBookResponseDTO(String bookTitle, String authorName, LocalDate dateRead, LocalDate dateAdded) {
         this.bookTitle = bookTitle;
         this.authorName = authorName;
         this.dateRead = dateRead;
