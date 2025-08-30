@@ -20,7 +20,12 @@ public class Book {
 
     private String title;
 
+    @Column(name = "author_id")
     private Long authorId;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", insertable=false, updatable=false)
+    private Author author;
 
     private String isbn;
 
@@ -42,5 +47,9 @@ public class Book {
 
     public Book() {
 
+    }
+
+    public Author getAuthor() {
+         return author;
     }
 }

@@ -29,11 +29,12 @@ public class MyBookController {
 
         try {
             myBookService.addBookToMyBooks(myBookCreateRequest);
+            return ResponseEntity.ok(new ControllerResponse<>(BOOK_ADDED));
         } catch (UserNotFoundException | BookNotFoundException | UserAlreadyHasThisBookException exception) {
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
 
-        return ResponseEntity.ok(new ControllerResponse<>(BOOK_ADDED));
+
     }
 
     @GetMapping("/{userId}")

@@ -4,7 +4,6 @@ import com.myreads.MyReads.dto.MyBookResponseDTO;
 import com.myreads.MyReads.exceptions.BookNotFoundException;
 import com.myreads.MyReads.exceptions.UserAlreadyHasThisBookException;
 import com.myreads.MyReads.exceptions.UserNotFoundException;
-import com.myreads.MyReads.models.Author;
 import com.myreads.MyReads.models.Book;
 import com.myreads.MyReads.models.MyBook;
 import com.myreads.MyReads.repositories.AuthorRepository;
@@ -24,13 +23,11 @@ public class MyBookService {
     private final MyBookRepository myBookRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
-    private final AuthorRepository authorRepository;
 
-    public MyBookService(MyBookRepository myBookRepository, BookRepository bookRepository, UserRepository userRepository, AuthorService authorService, AuthorRepository authorRepository) {
+    public MyBookService(MyBookRepository myBookRepository, BookRepository bookRepository, UserRepository userRepository) {
         this.myBookRepository = myBookRepository;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
-        this.authorRepository = authorRepository;
     }
 
     public void addBookToMyBooks(MyBookCreateRequest myBookCreateRequest) {
@@ -73,14 +70,8 @@ public class MyBookService {
                 continue;
             }
 
-            Optional<Author> author = authorRepository.findById(book.get().getAuthorId());
-
-            if (author.isEmpty()){
-                continue;
-            }
-
             String bookTitle = book.get().getTitle();
-            String authorName = author.get().getName();
+            String authorName = book.get().getAuthor().getName();
 
             MyBookResponseDTO myBookResponseDTO = new MyBookResponseDTO(
                         bookTitle,
