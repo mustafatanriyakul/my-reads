@@ -11,6 +11,7 @@ import com.myreads.MyReads.repositories.GenreRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorGenreService {
@@ -47,6 +48,11 @@ public class AuthorGenreService {
 
     public List<AuthorGenre> getAllAuthorGenres(){
         return authorGenreRepository.findAll();
+    }
+
+    public Optional<AuthorGenre> getAuthorGenreByAuthorId(Long authorId){
+
+        return authorGenreRepository.findByAuthorId(authorId);
     }
 
 }

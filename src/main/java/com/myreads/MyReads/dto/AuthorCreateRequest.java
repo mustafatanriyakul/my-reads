@@ -6,5 +6,6 @@ import lombok.Data;
 public class AuthorCreateRequest {
 
     private String name;
+    private String birthplace;
 
 }
