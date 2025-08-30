@@ -17,13 +17,15 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String birthplace;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Author(String name){
+    public Author(String name, String birthplace){
         this.name = name;
+        this.birthplace = birthplace;
     }
 
     public Author() {

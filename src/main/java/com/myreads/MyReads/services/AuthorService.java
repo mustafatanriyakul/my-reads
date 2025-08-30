@@ -28,7 +28,9 @@ public class AuthorService {
         if (authorRepository.findByName(authorCreateRequest.getName()).isPresent()) {
             throw new AuthorAlreadyExistsException(authorCreateRequest.getName());
         }
-        authorRepository.save(new Author(authorCreateRequest.getName()));
+        authorRepository.save(new Author(
+                authorCreateRequest.getName(),
+                authorCreateRequest.getBirthplace()));
     }
 
 

@@ -86,7 +86,8 @@ public class UserBookService {
                         bookTitle,
                         authorName,
                         dateRead,
-                        dateAdded);
+                        dateAdded,
+                        author.get().getId());
 
             userBookResponseDTOS.add(userBookResponseDTO);
         }
