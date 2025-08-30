@@ -2,8 +2,6 @@ package com.myreads.MyReads.services;
 
 import com.myreads.MyReads.dto.BookResponseDTO;
 import com.myreads.MyReads.exceptions.AuthorNotFoundException;
-import com.myreads.MyReads.exceptions.BookAlreadyExistsException;
-import com.myreads.MyReads.models.Author;
 import com.myreads.MyReads.models.Book;
 import com.myreads.MyReads.repositories.AuthorRepository;
 import com.myreads.MyReads.repositories.BookRepository;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookService {
@@ -20,7 +17,7 @@ public class BookService {
     private final AuthorRepository authorRepository;
 
 
-    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, AuthorService authorService) {
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
     }
@@ -29,10 +26,6 @@ public class BookService {
 
         if (authorRepository.findById(bookCreateRequest.getAuthorId()).isEmpty()) {
             throw new AuthorNotFoundException(bookCreateRequest.getAuthorId());
-        }
-
-        if (bookRepository.findByTitle(bookCreateRequest.getTitle()).isPresent()) {
-            throw new BookAlreadyExistsException(bookCreateRequest.getTitle());
         }
 
 
@@ -51,17 +44,9 @@ public class BookService {
 
         for (Book book : books) {
 
-            Optional<Author> author = authorRepository.findById(book.getAuthorId());
-
-            if (author.isEmpty()){
-                continue;
-            }
-
-            String authorName = author.get().getName();
-
             BookResponseDTO bookResponse = new BookResponseDTO(
                     book.getTitle(),
-                    authorName,
+                    book.getAuthor().getName(),
                     book.getIsbn(),
                     book.getDatePublished());
 

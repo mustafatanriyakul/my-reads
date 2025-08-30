@@ -22,10 +22,10 @@ public class AuthorController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ControllerResponse<String>> createAuthor(@RequestBody AuthorCreateRequest authorCreateRequest) {
+    public ResponseEntity<ControllerResponse<String>> create(@RequestBody AuthorCreateRequest authorCreateRequest) {
 
         try {
-            authorService.createAuthor(authorCreateRequest);
+            authorService.create(authorCreateRequest);
         } catch (AuthorAlreadyExistsException exception) {
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
@@ -35,14 +35,14 @@ public class AuthorController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ControllerResponse<?>> getAllAuthors(){
+    public ResponseEntity<ControllerResponse<?>> gelAll(){
 
-        return ResponseEntity.ok(new ControllerResponse<>(authorService.getAllAuthors()));
+        return ResponseEntity.ok(new ControllerResponse<>(authorService.getAll()));
     }
 
     @GetMapping("/{authorId}")
-    public ResponseEntity<ControllerResponse<?>> getBookListOfAuthor(@PathVariable Long authorId){
-        List<BookResponseDTO> bookList = authorService.getAuthorBookListByAuthorId(authorId);
+    public ResponseEntity<ControllerResponse<?>> getBookListByAuthorId(@PathVariable Long authorId){
+        List<BookResponseDTO> bookList = authorService.getBookListByAuthorId(authorId);
 
         return ResponseEntity.ok(new ControllerResponse<>(bookList));
     }
