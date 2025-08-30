@@ -25,7 +25,7 @@ public class UserService {
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public void register(UserRegisterRequest registerRequest) {
+    public User signup(UserRegisterRequest registerRequest) {
 
         if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
             throw new UsernameAlreadyExistsException(registerRequest.getUsername());
@@ -37,10 +37,12 @@ public class UserService {
                 encodedPassword);
 
         userRepository.save(newUser);
+
+        return newUser;
     }
 
 
-    public void login(UserLoginRequest loginRequest) {
+    public Optional<User> login(UserLoginRequest loginRequest) {
         Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
 
         if (user.isEmpty()) {
@@ -50,5 +52,7 @@ public class UserService {
         if (! encoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
             throw new InvalidPasswordException();
         }
+
+        return user;
     }
 }

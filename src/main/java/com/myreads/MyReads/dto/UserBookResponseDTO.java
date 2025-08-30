@@ -15,12 +15,15 @@ public class UserBookResponseDTO {
 
     private LocalDate dateAdded;
 
+    private Long authorId;
 
-    public UserBookResponseDTO(String bookTitle, String authorName, LocalDate dateRead, LocalDate dateAdded) {
+
+    public UserBookResponseDTO(String bookTitle, String authorName, LocalDate dateRead, LocalDate dateAdded, Long authorId) {
         this.bookTitle = bookTitle;
         this.authorName = authorName;
         this.dateRead = dateRead;
         this.dateAdded = dateAdded;
+        this.authorId = authorId;
     }
 }
 
