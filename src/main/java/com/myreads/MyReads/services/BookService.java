@@ -24,6 +24,11 @@ public class BookService {
 
     public void createBook(BookCreateRequest bookCreateRequest) {
 
+        if (authorRepository.findById(bookCreateRequest.getAuthorId()).isEmpty()) {
+            throw new AuthorNotFoundException(bookCreateRequest.getAuthorId());
+        }
+
+
         Book book = new Book(bookCreateRequest.getTitle(),
                 bookCreateRequest.getAuthorId(),
                 bookCreateRequest.getIsbn(),
