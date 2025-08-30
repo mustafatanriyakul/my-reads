@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -38,6 +40,8 @@ public class UserController {
         try{
             User user = userService.signup(registerRequest);
             return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED, user));
+            userService.register(registerRequest);
+            return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED));
         } catch (UsernameAlreadyExistsException exception){
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
@@ -48,6 +52,8 @@ public class UserController {
         try {
             Optional<User> user = userService.login(loginRequest);
             return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, user));
+            userService.login(loginRequest);
+            return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN));
         } catch (InvalidUsernameException |InvalidPasswordException exception){
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
@@ -66,5 +72,17 @@ public class UserController {
         return errors;
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
 }
 
