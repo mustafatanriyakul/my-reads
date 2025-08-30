@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/users")
 @CrossOrigin
@@ -31,6 +33,11 @@ public class UserController {
     }
 
 
+<<<<<<< HEAD
+=======
+    @PostMapping("/register")
+    public ResponseEntity<ControllerResponse<String>> register(@Valid @RequestBody UserRegisterRequest registerRequest){
+>>>>>>> 78a58e6 (-AuthorGenre and UserBook created and implemented)
     @PostMapping("/signup")
     public ResponseEntity<ControllerResponse<?>> signup(@RequestBody UserRegisterRequest registerRequest){
         try{
@@ -38,6 +45,8 @@ public class UserController {
             return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED, user));
             userService.register(registerRequest);
             return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED));
+            User user = userService.signup(registerRequest);
+            return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED, user));
         } catch (UsernameAlreadyExistsException exception){
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
@@ -53,10 +62,15 @@ public class UserController {
             return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, user));
             userService.login(loginRequest);
             return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN));
+            Optional<User> user = userService.login(loginRequest);
+            return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, user));
         } catch (InvalidUsernameException |InvalidPasswordException exception){
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 78a58e6 (-AuthorGenre and UserBook created and implemented)
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -69,6 +83,10 @@ public class UserController {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 78a58e6 (-AuthorGenre and UserBook created and implemented)
     }
 }
 
