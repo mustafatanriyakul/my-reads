@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AuthorService {
@@ -24,7 +23,7 @@ public class AuthorService {
         this.bookRepository = bookRepository;
     }
 
-    public void createAuthor(AuthorCreateRequest authorCreateRequest) {
+    public void create(AuthorCreateRequest authorCreateRequest) {
 
         if (authorRepository.findByName(authorCreateRequest.getName()).isPresent()) {
             throw new AuthorAlreadyExistsException(authorCreateRequest.getName());
@@ -35,11 +34,11 @@ public class AuthorService {
     }
 
 
-    public List<Author> getAllAuthors() {
+    public List<Author> getAll() {
         return authorRepository.findAll();
     }
 
-    public List<BookResponseDTO> getAuthorBookListByAuthorId(Long authorId) {
+    public List<BookResponseDTO> getBookListByAuthorId(Long authorId) {
 
         List<Book> booksOfAuthor = bookRepository.findAllByAuthorId(authorId);
 
@@ -47,17 +46,9 @@ public class AuthorService {
 
         for (Book book : booksOfAuthor) {
 
-            Optional<Author> author = authorRepository.findById(book.getAuthorId());
-
-            if (author.isEmpty()){
-                continue;
-            }
-
-            String authorName = author.get().getName();
-
             BookResponseDTO bookResponseDTO = new BookResponseDTO(
                     book.getTitle(),
-                    authorName,
+                    book.getAuthor().getName(),
                     book.getIsbn(),
                     book.getDatePublished()
             );

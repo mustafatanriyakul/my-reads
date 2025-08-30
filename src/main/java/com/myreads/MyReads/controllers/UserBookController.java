@@ -29,6 +29,7 @@ public class UserBookController {
 
         try {
             userBookService.addBookToUserBooks(userBookCreateRequest);
+            return ResponseEntity.ok(new ControllerResponse<>(BOOK_ADDED));
         } catch (UserNotFoundException | BookNotFoundException | UserAlreadyHasThisBookException exception) {
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }

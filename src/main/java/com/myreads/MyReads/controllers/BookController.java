@@ -20,7 +20,7 @@ public class BookController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ControllerResponse<String>> createBook(@RequestBody BookCreateRequest bookCreateRequest) {
+    public ResponseEntity<ControllerResponse<String>> create(@RequestBody BookCreateRequest bookCreateRequest) {
 
         try {
             bookService.createBook(bookCreateRequest);
@@ -32,7 +32,7 @@ public class BookController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ControllerResponse<?>> getAllBooks(){
+    public ResponseEntity<ControllerResponse<?>> getAll(){
         return ResponseEntity.ok(new ControllerResponse<>(bookService.getAllBooks()));
     }
 }
