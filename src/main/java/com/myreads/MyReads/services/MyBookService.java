@@ -32,14 +32,6 @@ public class MyBookService {
 
     public void addBookToMyBooks(MyBookCreateRequest myBookCreateRequest) {
 
-        if (userRepository.findById(myBookCreateRequest.getUserId()).isEmpty()) {
-            throw new UserNotFoundException(myBookCreateRequest.getUserId());
-        }
-
-        if (bookRepository.findById(myBookCreateRequest.getBookId()).isEmpty()) {
-            throw new BookNotFoundException(myBookCreateRequest.getBookId());
-        }
-
         if (myBookRepository.existsByUserIdAndBookId(myBookCreateRequest.getUserId(), myBookCreateRequest.getBookId())) {
             throw new UserAlreadyHasThisBookException(myBookCreateRequest.getBookId());
         }
