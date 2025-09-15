@@ -17,9 +17,19 @@ public class AuthorGenre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "author_id")
     private Long authorId;
 
+    @ManyToOne
+    @JoinColumn(name = "author_id", insertable = false, updatable = false)
+    private Author author;
+
+    @Column(name = "genre_id")
     private Long genreId;
+
+    @ManyToOne
+    @JoinColumn(name = "genre_id", insertable = false, updatable = false)
+    private Genre genre;
 
     @CreatedDate
     private LocalDateTime createdAt;

@@ -1,9 +1,7 @@
 package com.myreads.MyReads.services;
 
 import com.myreads.MyReads.dto.BookResponseDTO;
-import com.myreads.MyReads.exceptions.AuthorNotFoundException;
 import com.myreads.MyReads.models.Book;
-import com.myreads.MyReads.repositories.AuthorRepository;
 import com.myreads.MyReads.repositories.BookRepository;
 import com.myreads.MyReads.dto.BookCreateRequest;
 import org.springframework.stereotype.Service;
@@ -14,12 +12,10 @@ import java.util.List;
 @Service
 public class BookService {
     private final BookRepository bookRepository;
-    private final AuthorRepository authorRepository;
 
 
-    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
+    public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
-        this.authorRepository = authorRepository;
     }
 
     public void createBook(BookCreateRequest bookCreateRequest) {
@@ -43,7 +39,9 @@ public class BookService {
                     book.getTitle(),
                     book.getAuthor().getName(),
                     book.getIsbn(),
-                    book.getDatePublished());
+                    book.getDatePublished(),
+                    book.getAuthorId()
+            );
 
             bookResponseDTOS.add(bookResponse);
         }

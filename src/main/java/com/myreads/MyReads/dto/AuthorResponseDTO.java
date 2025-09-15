@@ -1,20 +1,22 @@
 package com.myreads.MyReads.dto;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class AuthorResponseDTO {
 
     private String authorName;
 
-    private String genreName;
-
     private String birthplace;
 
+    private List<String> genres;
 
-    public AuthorResponseDTO(String authorName, String genreName, String birthplace) {
+
+    public AuthorResponseDTO(String authorName, String birthplace, List<String> genres) {
         this.authorName = authorName;
-        this.genreName = genreName;
         this.birthplace = birthplace;
+        this.genres = genres;
     }
 }
 
