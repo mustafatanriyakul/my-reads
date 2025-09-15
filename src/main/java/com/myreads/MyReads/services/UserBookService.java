@@ -80,14 +80,15 @@ public class UserBookService {
             }
 
             String bookTitle = book.get().getTitle();
-            String authorName = author.get().getName();
+            String authorName = book.get().getAuthor().getName();
+            Long authorId = book.get().getAuthorId();
 
             UserBookResponseDTO userBookResponseDTO = new UserBookResponseDTO(
                         bookTitle,
                         authorName,
                         dateRead,
                         dateAdded,
-                        author.get().getId());
+                        authorId);
 
             userBookResponseDTOS.add(userBookResponseDTO);
         }

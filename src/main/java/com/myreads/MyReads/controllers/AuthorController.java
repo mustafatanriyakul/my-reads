@@ -1,6 +1,7 @@
 package com.myreads.MyReads.controllers;
 
 import com.myreads.MyReads.common.ControllerResponse;
+import com.myreads.MyReads.dto.AuthorResponseDTO;
 import com.myreads.MyReads.dto.BookResponseDTO;
 import com.myreads.MyReads.exceptions.AuthorAlreadyExistsException;
 import com.myreads.MyReads.dto.AuthorCreateRequest;
@@ -17,7 +18,6 @@ import java.util.List;
 public class AuthorController {
     public final String AUTHOR_CREATED_MESSAGE = "Author created.";
     private final AuthorService authorService;
-
     private final AuthorGenreService authorGenreService;
 
     public AuthorController(AuthorService authorService, AuthorGenreService authorGenreService) {
@@ -45,14 +45,17 @@ public class AuthorController {
     }
 
     @GetMapping("/{authorId}/books")
-    public ResponseEntity<ControllerResponse<?>> getBookListOfAuthor(@PathVariable Long authorId){
-        List<BookResponseDTO> bookList = authorService.getAuthorBookListByAuthorId(authorId);
+    public ResponseEntity<ControllerResponse<?>> getBookListByAuthorId(@PathVariable Long authorId){
+        List<BookResponseDTO> bookList = authorService.getBookListByAuthorId(authorId);
 
         return ResponseEntity.ok(new ControllerResponse<>(bookList));
     }
 
-    /*@GetMapping("/{authorId}")
-    public ResponseEntity<ControllerResponse<?>> getAuthorDetails(@PathVariable Long authorId){
+    @GetMapping("/{authorId}")
+    public ResponseEntity<ControllerResponse<?>> getAuthorDetailsByAuthorId(@PathVariable Long authorId){
 
-    }*/
+        AuthorResponseDTO authorResponseDTO = authorService.getAuthorDetailsByAuthorId(authorId);
+
+        return ResponseEntity.ok(new ControllerResponse<>(authorResponseDTO));
+    }
 }

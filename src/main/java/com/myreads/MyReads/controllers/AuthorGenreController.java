@@ -39,4 +39,11 @@ public class AuthorGenreController {
 
         return ResponseEntity.ok(new ControllerResponse<>(authorGenreService.getAllAuthorGenres()));
     }
+
+    @GetMapping("/{authorId}")
+    public ResponseEntity<ControllerResponse<?>> getAuthorGenresByAuthorId(@PathVariable Long authorId){
+
+        return ResponseEntity.ok(new ControllerResponse<>(authorGenreService.getAuthorGenreByAuthorId(authorId)));
+
+    }
 }

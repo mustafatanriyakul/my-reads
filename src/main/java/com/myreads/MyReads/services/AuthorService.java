@@ -1,5 +1,6 @@
 package com.myreads.MyReads.services;
 
+import com.myreads.MyReads.dto.AuthorResponseDTO;
 import com.myreads.MyReads.dto.BookResponseDTO;
 import com.myreads.MyReads.exceptions.AuthorAlreadyExistsException;
 import com.myreads.MyReads.models.Author;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorService {
@@ -18,9 +20,12 @@ public class AuthorService {
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
 
-    public AuthorService(AuthorRepository authorRepository, BookRepository bookRepository) {
+    private final AuthorGenreService authorGenreService;
+
+    public AuthorService(AuthorRepository authorRepository, BookRepository bookRepository, AuthorGenreService authorGenreService) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
+        this.authorGenreService = authorGenreService;
     }
 
     public void create(AuthorCreateRequest authorCreateRequest) {
@@ -32,7 +37,6 @@ public class AuthorService {
                 authorCreateRequest.getName(),
                 authorCreateRequest.getBirthplace()));
     }
-
 
     public List<Author> getAll() {
         return authorRepository.findAll();
@@ -50,12 +54,32 @@ public class AuthorService {
                     book.getTitle(),
                     book.getAuthor().getName(),
                     book.getIsbn(),
-                    book.getDatePublished()
+                    book.getDatePublished(),
+                    book.getAuthorId()
             );
 
             booksOfAuthorResponse.add(bookResponseDTO);
         }
 
         return booksOfAuthorResponse;
+    }
+
+    public AuthorResponseDTO getAuthorDetailsByAuthorId(Long authorId){
+
+        Optional<Author> author = authorRepository.findById(authorId);
+
+        if (author.isEmpty()){
+            return null;
+        }
+
+        List<String> genres = authorGenreService.getAuthorGenreByAuthorId(authorId);
+
+        AuthorResponseDTO authorDetails = new AuthorResponseDTO(
+                author.get().getName(),
+                author.get().getBirthplace(),
+                genres
+        );
+
+        return authorDetails;
     }
 }

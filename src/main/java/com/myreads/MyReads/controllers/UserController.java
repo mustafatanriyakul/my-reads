@@ -20,9 +20,6 @@ import java.util.Map;
 
 import java.util.Optional;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/users")
 @CrossOrigin
@@ -36,25 +33,14 @@ public class UserController {
     }
 
 
-<<<<<<< HEAD
-=======
-    @PostMapping("/register")
-    public ResponseEntity<ControllerResponse<String>> register(@Valid @RequestBody UserRegisterRequest registerRequest){
->>>>>>> 78a58e6 (-AuthorGenre and UserBook created and implemented)
     @PostMapping("/signup")
-    public ResponseEntity<ControllerResponse<?>> signup(@RequestBody UserRegisterRequest registerRequest){
+    public ResponseEntity<ControllerResponse<?>> signup(@Valid @RequestBody UserRegisterRequest registerRequest){
         try{
-            User user = userService.signup(registerRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED, user));
-            userService.register(registerRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED));
             User user = userService.signup(registerRequest);
             return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED, user));
         } catch (UsernameAlreadyExistsException exception){
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
-
-        return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED));
     }
 
     @PostMapping("/login")
@@ -62,27 +48,23 @@ public class UserController {
         try {
             Optional<User> user = userService.login(loginRequest);
             return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, user));
-            userService.login(loginRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN));
-            Optional<User> user = userService.login(loginRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, user));
         } catch (InvalidUsernameException |InvalidPasswordException exception){
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
 
-        @ResponseStatus(HttpStatus.BAD_REQUEST)
-        @ExceptionHandler(MethodArgumentNotValidException.class)
-        public Map<String, String> handleValidationExceptions(
-                MethodArgumentNotValidException ex) {
-            Map<String, String> errors = new HashMap<>();
-            ex.getBindingResult().getAllErrors().forEach((error) -> {
-                String fieldName = ((FieldError) error).getField();
-                String errorMessage = error.getDefaultMessage();
-                errors.put(fieldName, errorMessage);
-            });
-            return errors;
-        }
 }
 

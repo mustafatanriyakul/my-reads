@@ -15,11 +15,14 @@ public class BookResponseDTO {
 
     private LocalDate datePublished;
 
+    private Long authorId;
 
-    public BookResponseDTO(String title, String authorName, String isbn, LocalDate datePublished) {
+
+    public BookResponseDTO(String title, String authorName, String isbn, LocalDate datePublished, Long authorId) {
         this.title = title;
         this.authorName = authorName;
         this.isbn = isbn;
         this.datePublished = datePublished;
+        this.authorId = authorId;
     }
 }
