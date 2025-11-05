@@ -46,8 +46,8 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<ControllerResponse<?>> login(@RequestBody UserLoginRequest loginRequest){
         try {
-            Optional<User> user = userService.login(loginRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, user));
+            String token = userService.login(loginRequest);
+            return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, token));
         } catch (InvalidUsernameException |InvalidPasswordException exception){
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
