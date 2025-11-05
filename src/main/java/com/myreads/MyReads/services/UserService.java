@@ -7,6 +7,8 @@ import com.myreads.MyReads.models.User;
 import com.myreads.MyReads.repositories.UserRepository;
 import com.myreads.MyReads.dto.UserLoginRequest;
 import com.myreads.MyReads.dto.UserRegisterRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -16,6 +18,12 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
+    @Autowired
+    private JWTService jwtService;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
 
     private final UserRepository userRepository;
 
@@ -42,7 +50,7 @@ public class UserService {
     }
 
 
-    public Optional<User> login(UserLoginRequest loginRequest) {
+    public String login(UserLoginRequest loginRequest) {
         Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
 
         if (user.isEmpty()) {
@@ -53,6 +61,6 @@ public class UserService {
             throw new InvalidPasswordException();
         }
 
-        return user;
+        return jwtService.generateToken(loginRequest.getUsername());
     }
 }
