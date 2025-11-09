@@ -6,29 +6,36 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class Author {
+public class UserBook {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String birthplace;
+
+    private Long userId;
+    private Long bookId;
+    private LocalDate dateRead;
+    private LocalDate dateAdded;
+
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Author(String name, String birthplace){
-        this.name = name;
-        this.birthplace = birthplace;
+    public UserBook(Long userId, Long bookId, LocalDate dateRead) {
+        this.userId = userId;
+        this.bookId = bookId;
+        this.dateRead = dateRead;
+        this.dateAdded = LocalDate.now();
     }
 
-    public Author() {
+    public UserBook() {
 
     }
 }

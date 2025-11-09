@@ -11,24 +11,40 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class Author {
+public class AuthorGenre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String birthplace;
+
+    @Column(name = "author_id")
+    private Long authorId;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", insertable = false, updatable = false)
+    private Author author;
+
+    @Column(name = "genre_id")
+    private Long genreId;
+
+    @ManyToOne
+    @JoinColumn(name = "genre_id", insertable = false, updatable = false)
+    private Genre genre;
+
     @CreatedDate
     private LocalDateTime createdAt;
+
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Author(String name, String birthplace){
-        this.name = name;
-        this.birthplace = birthplace;
+
+    public AuthorGenre(Long authorId, Long genreId){
+        this.authorId = authorId;
+        this.genreId = genreId;
     }
 
-    public Author() {
+    public AuthorGenre(){
 
     }
+
 }

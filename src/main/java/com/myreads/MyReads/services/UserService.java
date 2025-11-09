@@ -7,6 +7,8 @@ import com.myreads.MyReads.models.User;
 import com.myreads.MyReads.repositories.UserRepository;
 import com.myreads.MyReads.dto.UserLoginRequest;
 import com.myreads.MyReads.dto.UserRegisterRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -17,6 +19,12 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    @Autowired
+    private JWTService jwtService;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
@@ -25,7 +33,7 @@ public class UserService {
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public void register(UserRegisterRequest registerRequest) {
+    public User signup(UserRegisterRequest registerRequest) {
 
         if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
             throw new UsernameAlreadyExistsException(registerRequest.getUsername());
@@ -37,10 +45,12 @@ public class UserService {
                 encodedPassword);
 
         userRepository.save(newUser);
+
+        return newUser;
     }
 
 
-    public void login(UserLoginRequest loginRequest) {
+    public String login(UserLoginRequest loginRequest) {
         Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
 
         if (user.isEmpty()) {
@@ -50,5 +60,7 @@ public class UserService {
         if (! encoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
             throw new InvalidPasswordException();
         }
+
+        return jwtService.generateToken(loginRequest.getUsername());
     }
 }

@@ -6,6 +6,7 @@ import com.myreads.MyReads.exceptions.InvalidUsernameException;
 import com.myreads.MyReads.exceptions.UsernameAlreadyExistsException;
 import com.myreads.MyReads.dto.UserLoginRequest;
 import com.myreads.MyReads.dto.UserRegisterRequest;
+import com.myreads.MyReads.models.User;
 import com.myreads.MyReads.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/users")
 @CrossOrigin
 public class UserController {
-    public final String USER_REGISTERED = "User registered successfully";
-    public final String USER_LOGGED_IN = "User logged in successfully";
+    public final String USER_REGISTERED = "User registered successfully.";
+    public final String USER_LOGGED_IN = "User logged in successfully.";
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -30,21 +33,21 @@ public class UserController {
     }
 
 
-    @PostMapping("/register")
-    public ResponseEntity<ControllerResponse<String>> register(@Valid @RequestBody UserRegisterRequest registerRequest){
+    @PostMapping("/signup")
+    public ResponseEntity<ControllerResponse<?>> signup(@Valid @RequestBody UserRegisterRequest registerRequest){
         try{
-            userService.register(registerRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED));
+            User user = userService.signup(registerRequest);
+            return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED, user));
         } catch (UsernameAlreadyExistsException exception){
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ControllerResponse<String>> login(@RequestBody UserLoginRequest loginRequest){
+    public ResponseEntity<ControllerResponse<?>> login(@RequestBody UserLoginRequest loginRequest){
         try {
-            userService.login(loginRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN));
+            String token = userService.login(loginRequest);
+            return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, token));
         } catch (InvalidUsernameException |InvalidPasswordException exception){
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
