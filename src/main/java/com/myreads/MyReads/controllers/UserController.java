@@ -33,41 +33,27 @@ public class UserController {
     }
 
 
-<<<<<<< HEAD
-=======
-    @PostMapping("/register")
-    public ResponseEntity<ControllerResponse<String>> register(@Valid @RequestBody UserRegisterRequest registerRequest){
->>>>>>> 78a58e6 (-AuthorGenre and UserBook created and implemented)
     @PostMapping("/signup")
-    public ResponseEntity<ControllerResponse<?>> signup(@Valid @RequestBody UserRegisterRequest registerRequest){
-        try{
+    public ResponseEntity<ControllerResponse<?>> signup(@Valid @RequestBody UserRegisterRequest registerRequest) {
+        try {
             User user = userService.signup(registerRequest);
             return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED, user));
-            userService.register(registerRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED));
-            User user = userService.signup(registerRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED, user));
-        } catch (UsernameAlreadyExistsException exception){
+
+        } catch (UsernameAlreadyExistsException exception) {
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ControllerResponse<?>> login(@RequestBody UserLoginRequest loginRequest){
+    public ResponseEntity<ControllerResponse<?>> login(@RequestBody UserLoginRequest loginRequest) {
         try {
             Optional<User> user = userService.login(loginRequest);
             return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, user));
-            userService.login(loginRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN));
-            Optional<User> user = userService.login(loginRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, user));
-        } catch (InvalidUsernameException |InvalidPasswordException exception){
+
+        } catch (InvalidUsernameException | InvalidPasswordException exception) {
             return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
         }
-<<<<<<< HEAD
-
-=======
->>>>>>> 78a58e6 (-AuthorGenre and UserBook created and implemented)
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -80,10 +66,6 @@ public class UserController {
             errors.put(fieldName, errorMessage);
         });
         return errors;
-<<<<<<< HEAD
-=======
 
->>>>>>> 78a58e6 (-AuthorGenre and UserBook created and implemented)
     }
 }
-

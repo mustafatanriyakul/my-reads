@@ -1,22 +1,25 @@
 package com.myreads.MyReads.services;
 
 import com.myreads.MyReads.dto.BookResponseDTO;
+import com.myreads.MyReads.exceptions.AuthorNotFoundException;
 import com.myreads.MyReads.models.Book;
+import com.myreads.MyReads.repositories.AuthorRepository;
 import com.myreads.MyReads.repositories.BookRepository;
 import com.myreads.MyReads.dto.BookCreateRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookService {
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
 
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
     }
 
     public void createBook(BookCreateRequest bookCreateRequest) {
