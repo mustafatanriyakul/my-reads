@@ -1,6 +1,5 @@
 package com.myreads.MyReads.models;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,25 +13,22 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String username;
-    private String password;
+  @Column(unique = true, nullable = false)
+  private String username;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+  private String password;
 
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+  @CreatedDate private LocalDateTime createdAt;
+  @LastModifiedDate private LocalDateTime updatedAt;
 
-    public User() {
+  public User(String username, String password) {
+    this.username = username;
+    this.password = password;
+  }
 
-    }
+  public User() {}
 }

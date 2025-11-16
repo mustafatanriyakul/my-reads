@@ -14,23 +14,19 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Genre {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String name;
+  private String name;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+  @CreatedDate private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    private LocalDate updatedAt;
+  @LastModifiedDate private LocalDate updatedAt;
 
-    public Genre(String name){
-        this.name = name;
-    }
+  public Genre(String name) {
+    this.name = name;
+  }
 
-    public Genre(){
-
-    }
+  public Genre() {}
 }

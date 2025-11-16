@@ -13,22 +13,19 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Author {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String birthplace;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    public Author(String name, String birthplace){
-        this.name = name;
-        this.birthplace = birthplace;
-    }
+  private String name;
+  private String birthplace;
+  @CreatedDate private LocalDateTime createdAt;
+  @LastModifiedDate private LocalDateTime updatedAt;
 
-    public Author() {
+  public Author(String name, String birthplace) {
+    this.name = name;
+    this.birthplace = birthplace;
+  }
 
-    }
+  public Author() {}
 }

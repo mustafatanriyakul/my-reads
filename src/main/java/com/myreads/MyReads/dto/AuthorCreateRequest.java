@@ -5,7 +5,6 @@ import lombok.Data;
 @Data
 public class AuthorCreateRequest {
 
-    private String name;
-    private String birthplace;
-
+  private String name;
+  private String birthplace;
 }

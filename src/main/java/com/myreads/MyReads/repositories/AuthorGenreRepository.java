@@ -6,14 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-
 public interface AuthorGenreRepository extends JpaRepository<AuthorGenre, Long> {
 
-    boolean existsByAuthorIdAndGenreId(Long authorId, Long genreId);
+  boolean existsByAuthorIdAndGenreId(Long authorId, Long genreId);
 
-    @Query("SELECT g.name " +
-            "FROM AuthorGenre ag " +
-            "JOIN Genre g ON ag.genreId = g.id " +
-            "WHERE ag.authorId = :authorId")
-    List<String> findGenreNamesByAuthorId(Long authorId);
+  @Query(
+      "SELECT g.name "
+          + "FROM AuthorGenre ag "
+          + "JOIN Genre g ON ag.genreId = g.id "
+          + "WHERE ag.authorId = :authorId")
+  List<String> findGenreNamesByAuthorId(Long authorId);
 }

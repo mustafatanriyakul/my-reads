@@ -16,37 +16,38 @@ import java.util.List;
 @RequestMapping("/mybooks")
 @CrossOrigin
 public class UserBookController {
-    public static String BOOK_ADDED = "Book added.";
-    public static String BOOKS_FETCHED = "Book fetched successfully.";
-    private final UserBookService userBookService;
+  public static String BOOK_ADDED = "Book added.";
+  public static String BOOKS_FETCHED = "Book fetched successfully.";
+  private final UserBookService userBookService;
 
-    public UserBookController(UserBookService userBookService) {
-        this.userBookService = userBookService;
+  public UserBookController(UserBookService userBookService) {
+    this.userBookService = userBookService;
+  }
+
+  @PostMapping("/add")
+  public ResponseEntity<ControllerResponse<String>> addBookUserBooks(
+      @RequestBody UserBookCreateRequest userBookCreateRequest) {
+
+    try {
+      userBookService.addBookToUserBooks(userBookCreateRequest);
+      return ResponseEntity.ok(new ControllerResponse<>(BOOK_ADDED));
+    } catch (UserNotFoundException
+        | BookNotFoundException
+        | UserAlreadyHasThisBookException exception) {
+      return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
     }
+  }
 
-    @PostMapping("/add")
-    public ResponseEntity<ControllerResponse<String>> addBookUserBooks(@RequestBody UserBookCreateRequest userBookCreateRequest) {
+  @GetMapping("/{userId}")
+  public ResponseEntity<ControllerResponse<List<UserBookResponseDTO>>> getUserBooks(
+      @PathVariable Long userId) {
 
-        try {
-            userBookService.addBookToUserBooks(userBookCreateRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(BOOK_ADDED));
-        } catch (UserNotFoundException | BookNotFoundException | UserAlreadyHasThisBookException exception) {
-            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
-        }
+    try {
+      List<UserBookResponseDTO> userBookResponseDTOS = userBookService.getUserBookByUserId(userId);
 
-
+      return ResponseEntity.ok(new ControllerResponse<>(BOOKS_FETCHED, userBookResponseDTOS));
+    } catch (UserNotFoundException exception) {
+      return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
     }
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<ControllerResponse<List<UserBookResponseDTO>>> getUserBooks(@PathVariable Long userId) {
-
-        try {
-            List<UserBookResponseDTO> userBookResponseDTOS = userBookService.getUserBookByUserId(userId);
-
-            return ResponseEntity.ok(new ControllerResponse<>(BOOKS_FETCHED, userBookResponseDTOS));
-        } catch (UserNotFoundException exception) {
-            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
-        }
-
-    }
+  }
 }

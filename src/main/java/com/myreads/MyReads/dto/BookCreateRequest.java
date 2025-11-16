@@ -7,11 +7,11 @@ import java.time.LocalDate;
 @Data
 public class BookCreateRequest {
 
-    private String title;
+  private String title;
 
-    private Long authorId;
+  private Long authorId;
 
-    private String isbn;
+  private String isbn;
 
-    private LocalDate datePublished;
+  private LocalDate datePublished;
 }
