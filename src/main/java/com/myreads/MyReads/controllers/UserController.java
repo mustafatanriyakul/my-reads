@@ -24,47 +24,47 @@ import java.util.Optional;
 @RequestMapping("/users")
 @CrossOrigin
 public class UserController {
-    public final String USER_REGISTERED = "User registered successfully.";
-    public final String USER_LOGGED_IN = "User logged in successfully.";
-    private final UserService userService;
+  public final String USER_REGISTERED = "User registered successfully.";
+  public final String USER_LOGGED_IN = "User logged in successfully.";
+  private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+  public UserController(UserService userService) {
+    this.userService = userService;
+  }
+
+  @PostMapping("/signup")
+  public ResponseEntity<ControllerResponse<?>> signup(
+      @Valid @RequestBody UserRegisterRequest registerRequest) {
+    try {
+      User user = userService.signup(registerRequest);
+      return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED, user));
+    } catch (UsernameAlreadyExistsException exception) {
+      return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
     }
+  }
 
-
-    @PostMapping("/signup")
-    public ResponseEntity<ControllerResponse<?>> signup(@Valid @RequestBody UserRegisterRequest registerRequest){
-        try{
-            User user = userService.signup(registerRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_REGISTERED, user));
-        } catch (UsernameAlreadyExistsException exception){
-            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
-        }
+  @PostMapping("/login")
+  public ResponseEntity<ControllerResponse<?>> login(@RequestBody UserLoginRequest loginRequest) {
+    try {
+      String token = userService.login(loginRequest);
+      return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, token));
+    } catch (InvalidUsernameException | InvalidPasswordException exception) {
+      return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
     }
+  }
 
-    @PostMapping("/login")
-    public ResponseEntity<ControllerResponse<?>> login(@RequestBody UserLoginRequest loginRequest){
-        try {
-            String token = userService.login(loginRequest);
-            return ResponseEntity.ok(new ControllerResponse<>(USER_LOGGED_IN, token));
-        } catch (InvalidUsernameException |InvalidPasswordException exception){
-            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
-        }
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }
-
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    Map<String, String> errors = new HashMap<>();
+    ex.getBindingResult()
+        .getAllErrors()
+        .forEach(
+            (error) -> {
+              String fieldName = ((FieldError) error).getField();
+              String errorMessage = error.getDefaultMessage();
+              errors.put(fieldName, errorMessage);
+            });
+    return errors;
+  }
 }
-

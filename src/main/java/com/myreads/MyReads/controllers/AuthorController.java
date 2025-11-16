@@ -16,46 +16,47 @@ import java.util.List;
 @RequestMapping("/authors")
 @CrossOrigin
 public class AuthorController {
-    public final String AUTHOR_CREATED_MESSAGE = "Author created.";
-    private final AuthorService authorService;
-    private final AuthorGenreService authorGenreService;
+  public final String AUTHOR_CREATED_MESSAGE = "Author created.";
+  private final AuthorService authorService;
+  private final AuthorGenreService authorGenreService;
 
-    public AuthorController(AuthorService authorService, AuthorGenreService authorGenreService) {
-        this.authorService = authorService;
-        this.authorGenreService = authorGenreService;
+  public AuthorController(AuthorService authorService, AuthorGenreService authorGenreService) {
+    this.authorService = authorService;
+    this.authorGenreService = authorGenreService;
+  }
+
+  @PostMapping("/create")
+  public ResponseEntity<ControllerResponse<String>> create(
+      @RequestBody AuthorCreateRequest authorCreateRequest) {
+
+    try {
+      authorService.create(authorCreateRequest);
+    } catch (AuthorAlreadyExistsException exception) {
+      return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ControllerResponse<String>> create(@RequestBody AuthorCreateRequest authorCreateRequest) {
+    return ResponseEntity.ok(new ControllerResponse<>(AUTHOR_CREATED_MESSAGE));
+  }
 
-        try {
-            authorService.create(authorCreateRequest);
-        } catch (AuthorAlreadyExistsException exception) {
-            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
-        }
+  @GetMapping("/all")
+  public ResponseEntity<ControllerResponse<?>> gelAll() {
 
-        return ResponseEntity.ok(new ControllerResponse<>(AUTHOR_CREATED_MESSAGE));
+    return ResponseEntity.ok(new ControllerResponse<>(authorService.getAll()));
+  }
 
-    }
+  @GetMapping("/{authorId}/books")
+  public ResponseEntity<ControllerResponse<?>> getBookListByAuthorId(@PathVariable Long authorId) {
+    List<BookResponseDTO> bookList = authorService.getBookListByAuthorId(authorId);
 
-    @GetMapping("/all")
-    public ResponseEntity<ControllerResponse<?>> gelAll(){
+    return ResponseEntity.ok(new ControllerResponse<>(bookList));
+  }
 
-        return ResponseEntity.ok(new ControllerResponse<>(authorService.getAll()));
-    }
+  @GetMapping("/{authorId}")
+  public ResponseEntity<ControllerResponse<?>> getAuthorDetailsByAuthorId(
+      @PathVariable Long authorId) {
 
-    @GetMapping("/{authorId}/books")
-    public ResponseEntity<ControllerResponse<?>> getBookListByAuthorId(@PathVariable Long authorId){
-        List<BookResponseDTO> bookList = authorService.getBookListByAuthorId(authorId);
+    AuthorResponseDTO authorResponseDTO = authorService.getAuthorDetailsByAuthorId(authorId);
 
-        return ResponseEntity.ok(new ControllerResponse<>(bookList));
-    }
-
-    @GetMapping("/{authorId}")
-    public ResponseEntity<ControllerResponse<?>> getAuthorDetailsByAuthorId(@PathVariable Long authorId){
-
-        AuthorResponseDTO authorResponseDTO = authorService.getAuthorDetailsByAuthorId(authorId);
-
-        return ResponseEntity.ok(new ControllerResponse<>(authorResponseDTO));
-    }
+    return ResponseEntity.ok(new ControllerResponse<>(authorResponseDTO));
+  }
 }

@@ -12,29 +12,30 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class GenreController {
 
-    private final String GENRE_CREATED_MESSAGE = "Genre created";
+  private final String GENRE_CREATED_MESSAGE = "Genre created";
 
-    private final GenreService genreService;
+  private final GenreService genreService;
 
-    public GenreController(GenreService genreService){
-        this.genreService = genreService;
+  public GenreController(GenreService genreService) {
+    this.genreService = genreService;
+  }
+
+  @PostMapping("/create")
+  public ResponseEntity<ControllerResponse<?>> createGenre(
+      @RequestBody GenreCreateRequest genreCreateRequest) {
+
+    try {
+      genreService.createGenre(genreCreateRequest);
+    } catch (GenreAlreadyExistsException exception) {
+      return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ControllerResponse<?>> createGenre(@RequestBody GenreCreateRequest genreCreateRequest){
+    return ResponseEntity.ok(new ControllerResponse<>(GENRE_CREATED_MESSAGE));
+  }
 
-        try{
-            genreService.createGenre(genreCreateRequest);
-        } catch (GenreAlreadyExistsException exception){
-            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
-        }
+  @GetMapping("/all")
+  public ResponseEntity<ControllerResponse<?>> getAllGenres() {
 
-        return ResponseEntity.ok(new ControllerResponse<>(GENRE_CREATED_MESSAGE));
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<ControllerResponse<?>> getAllGenres(){
-
-        return ResponseEntity.ok(new ControllerResponse<>(genreService.getAllGenres()));
-    }
+    return ResponseEntity.ok(new ControllerResponse<>(genreService.getAllGenres()));
+  }
 }

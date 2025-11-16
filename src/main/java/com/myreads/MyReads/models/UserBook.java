@@ -14,28 +14,24 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class UserBook {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private Long userId;
-    private Long bookId;
-    private LocalDate dateRead;
-    private LocalDate dateAdded;
+  private Long userId;
+  private Long bookId;
+  private LocalDate dateRead;
+  private LocalDate dateAdded;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+  @CreatedDate private LocalDateTime createdAt;
+  @LastModifiedDate private LocalDateTime updatedAt;
 
-    public UserBook(Long userId, Long bookId, LocalDate dateRead) {
-        this.userId = userId;
-        this.bookId = bookId;
-        this.dateRead = dateRead;
-        this.dateAdded = LocalDate.now();
-    }
+  public UserBook(Long userId, Long bookId, LocalDate dateRead) {
+    this.userId = userId;
+    this.bookId = bookId;
+    this.dateRead = dateRead;
+    this.dateAdded = LocalDate.now();
+  }
 
-    public UserBook() {
-
-    }
+  public UserBook() {}
 }

@@ -5,8 +5,7 @@ import lombok.Data;
 @Data
 public class AuthorGenreCreateRequest {
 
-    private Long authorId;
+  private Long authorId;
 
-    private Long genreId;
-
+  private Long genreId;
 }

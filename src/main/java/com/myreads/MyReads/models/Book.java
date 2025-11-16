@@ -14,42 +14,37 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Book {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String title;
+  private String title;
 
-    @Column(name = "author_id")
-    private Long authorId;
+  @Column(name = "author_id")
+  private Long authorId;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id", insertable=false, updatable=false)
-    private Author author;
+  @ManyToOne
+  @JoinColumn(name = "author_id", insertable = false, updatable = false)
+  private Author author;
 
-    private String isbn;
+  private String isbn;
 
-    private LocalDate datePublished;
+  private LocalDate datePublished;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+  @CreatedDate private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+  @LastModifiedDate private LocalDateTime updatedAt;
 
-    public Book(String title, Long authorId, String isbn, LocalDate datePublished) {
-        this.title = title;
-        this.authorId = authorId;
-        this.isbn = isbn;
-        this.datePublished = datePublished;
-    }
+  public Book(String title, Long authorId, String isbn, LocalDate datePublished) {
+    this.title = title;
+    this.authorId = authorId;
+    this.isbn = isbn;
+    this.datePublished = datePublished;
+  }
 
+  public Book() {}
 
-    public Book() {
-
-    }
-
-    public Author getAuthor() {
-         return author;
-    }
+  public Author getAuthor() {
+    return author;
+  }
 }
