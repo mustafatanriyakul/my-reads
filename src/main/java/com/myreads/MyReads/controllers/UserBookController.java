@@ -1,12 +1,15 @@
 package com.myreads.MyReads.controllers;
 
 import com.myreads.MyReads.common.ControllerResponse;
+import com.myreads.MyReads.config.CookieUtils;
 import com.myreads.MyReads.dto.UserBookResponseDTO;
 import com.myreads.MyReads.exceptions.BookNotFoundException;
 import com.myreads.MyReads.exceptions.UserAlreadyHasThisBookException;
 import com.myreads.MyReads.exceptions.UserNotFoundException;
 import com.myreads.MyReads.dto.UserBookCreateRequest;
+import com.myreads.MyReads.services.JWTService;
 import com.myreads.MyReads.services.UserBookService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +23,11 @@ public class UserBookController {
   public static String BOOKS_FETCHED = "Book fetched successfully.";
   private final UserBookService userBookService;
 
-  public UserBookController(UserBookService userBookService) {
+  private final JWTService jwtService;
+
+  public UserBookController(UserBookService userBookService, JWTService jwtService) {
     this.userBookService = userBookService;
+    this.jwtService = jwtService;
   }
 
   @PostMapping("/add")
@@ -38,11 +44,14 @@ public class UserBookController {
     }
   }
 
-  @GetMapping("/{userId}")
+  @GetMapping()
   public ResponseEntity<ControllerResponse<List<UserBookResponseDTO>>> getUserBooks(
-      @PathVariable Long userId) {
+      HttpServletRequest request) {
 
     try {
+      String token = CookieUtils.extractTokenFromCookies(request);
+      Long userId = jwtService.extractUserId(token);
+
       List<UserBookResponseDTO> userBookResponseDTOS = userBookService.getUserBookByUserId(userId);
 
       return ResponseEntity.ok(new ControllerResponse<>(BOOKS_FETCHED, userBookResponseDTOS));

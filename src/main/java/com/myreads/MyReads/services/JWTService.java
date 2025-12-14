@@ -32,14 +32,15 @@ public class JWTService {
     }
   }
 
-  public String generateToken(String username) {
+  public String generateToken(Long userId, String username) {
     Map<String, Object> claims = new HashMap<>();
+    claims.put("username", username);
     return Jwts.builder()
         .claims()
         .add(claims)
-        .subject(username)
+        .subject(String.valueOf(userId))
         .issuedAt(new Date(System.currentTimeMillis()))
-        .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5))
+        .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30 minutes
         .and()
         .signWith(getKey())
         .compact();
@@ -50,9 +51,12 @@ public class JWTService {
     return Keys.hmacShaKeyFor(keyBytes);
   }
 
+  public Long extractUserId(String token) {
+    return Long.parseLong(extractClaim(token, Claims::getSubject));
+  }
+
   public String extractUserName(String token) {
-    // extract the username from jwt token
-    return extractClaim(token, Claims::getSubject);
+    return extractClaim(token, claims -> claims.get("username", String.class));
   }
 
   private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
