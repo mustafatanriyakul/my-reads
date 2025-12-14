@@ -15,43 +15,45 @@ import java.util.List;
 @Service
 public class AuthorGenreService {
 
-    private final AuthorGenreRepository authorGenreRepository;
-    private final AuthorRepository authorRepository;
-    private final GenreRepository genreRepository;
+  private final AuthorGenreRepository authorGenreRepository;
+  private final AuthorRepository authorRepository;
+  private final GenreRepository genreRepository;
 
-    public AuthorGenreService(AuthorGenreRepository authorGenreRepository, AuthorRepository authorRepository, GenreRepository genreRepository){
-        this.authorGenreRepository = authorGenreRepository;
-        this.authorRepository = authorRepository;
-        this.genreRepository = genreRepository;
+  public AuthorGenreService(
+      AuthorGenreRepository authorGenreRepository,
+      AuthorRepository authorRepository,
+      GenreRepository genreRepository) {
+    this.authorGenreRepository = authorGenreRepository;
+    this.authorRepository = authorRepository;
+    this.genreRepository = genreRepository;
+  }
+
+  public void createAuthorGenre(AuthorGenreCreateRequest authorGenreCreateRequest) {
+
+    Long authorId = authorGenreCreateRequest.getAuthorId();
+    Long genreId = authorGenreCreateRequest.getGenreId();
+
+    if (!authorRepository.existsById(authorId)) {
+      throw new AuthorNotFoundException(authorId);
     }
 
-    public void createAuthorGenre(AuthorGenreCreateRequest authorGenreCreateRequest){
-
-        Long authorId = authorGenreCreateRequest.getAuthorId();
-        Long genreId = authorGenreCreateRequest.getGenreId();
-
-        if (!authorRepository.existsById(authorId)){
-            throw new AuthorNotFoundException(authorId);
-        }
-
-        if (!genreRepository.existsById(genreId)){
-            throw new GenreNotFoundException(genreId);
-        }
-
-        if (authorGenreRepository.existsByAuthorIdAndGenreId(authorId, genreId)){
-            throw new AuthorGenreAlreadyExistsException();
-        }
-
-        authorGenreRepository.save(new AuthorGenre(authorId, genreId));
+    if (!genreRepository.existsById(genreId)) {
+      throw new GenreNotFoundException(genreId);
     }
 
-    public List<AuthorGenre> getAllAuthorGenres(){
-        return authorGenreRepository.findAll();
+    if (authorGenreRepository.existsByAuthorIdAndGenreId(authorId, genreId)) {
+      throw new AuthorGenreAlreadyExistsException();
     }
 
-    public List<String> getAuthorGenreByAuthorId(Long authorId){
+    authorGenreRepository.save(new AuthorGenre(authorId, genreId));
+  }
 
-        return authorGenreRepository.findGenreNamesByAuthorId(authorId);
-    }
+  public List<AuthorGenre> getAllAuthorGenres() {
+    return authorGenreRepository.findAll();
+  }
 
+  public List<String> getAuthorGenreByAuthorId(Long authorId) {
+
+    return authorGenreRepository.findGenreNamesByAuthorId(authorId);
+  }
 }

@@ -13,38 +13,32 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class AuthorGenre {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "author_id")
-    private Long authorId;
+  @Column(name = "author_id")
+  private Long authorId;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id", insertable = false, updatable = false)
-    private Author author;
+  @ManyToOne
+  @JoinColumn(name = "author_id", insertable = false, updatable = false)
+  private Author author;
 
-    @Column(name = "genre_id")
-    private Long genreId;
+  @Column(name = "genre_id")
+  private Long genreId;
 
-    @ManyToOne
-    @JoinColumn(name = "genre_id", insertable = false, updatable = false)
-    private Genre genre;
+  @ManyToOne
+  @JoinColumn(name = "genre_id", insertable = false, updatable = false)
+  private Genre genre;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+  @CreatedDate private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+  @LastModifiedDate private LocalDateTime updatedAt;
 
+  public AuthorGenre(Long authorId, Long genreId) {
+    this.authorId = authorId;
+    this.genreId = genreId;
+  }
 
-    public AuthorGenre(Long authorId, Long genreId){
-        this.authorId = authorId;
-        this.genreId = genreId;
-    }
-
-    public AuthorGenre(){
-
-    }
-
+  public AuthorGenre() {}
 }

@@ -12,27 +12,28 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/books")
 @CrossOrigin
 public class BookController {
-    public final String BOOK_CREATED_MESSAGE = "Book created";
-    private final BookService bookService;
+  public final String BOOK_CREATED_MESSAGE = "Book created";
+  private final BookService bookService;
 
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
+  public BookController(BookService bookService) {
+    this.bookService = bookService;
+  }
+
+  @PostMapping("/create")
+  public ResponseEntity<ControllerResponse<String>> create(
+      @RequestBody BookCreateRequest bookCreateRequest) {
+
+    try {
+      bookService.createBook(bookCreateRequest);
+    } catch (AuthorNotFoundException | BookAlreadyExistsException exception) {
+      return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ControllerResponse<String>> create(@RequestBody BookCreateRequest bookCreateRequest) {
+    return ResponseEntity.ok(new ControllerResponse<>(BOOK_CREATED_MESSAGE));
+  }
 
-        try {
-            bookService.createBook(bookCreateRequest);
-        } catch (AuthorNotFoundException | BookAlreadyExistsException exception) {
-            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
-        }
-
-        return ResponseEntity.ok(new ControllerResponse<>(BOOK_CREATED_MESSAGE));
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<ControllerResponse<?>> getAll(){
-        return ResponseEntity.ok(new ControllerResponse<>(bookService.getAllBooks()));
-    }
+  @GetMapping("/all")
+  public ResponseEntity<ControllerResponse<?>> getAll() {
+    return ResponseEntity.ok(new ControllerResponse<>(bookService.getAllBooks()));
+  }
 }

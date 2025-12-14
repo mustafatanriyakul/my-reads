@@ -14,36 +14,40 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class AuthorGenreController {
 
-    private final String AUTHOR_GENRE_CREATED_MESSAGE = "AuthorGenre created.";
+  private final String AUTHOR_GENRE_CREATED_MESSAGE = "AuthorGenre created.";
 
-    private final AuthorGenreService authorGenreService;
+  private final AuthorGenreService authorGenreService;
 
-    public AuthorGenreController(AuthorGenreService authorGenreService){
-        this.authorGenreService = authorGenreService;
+  public AuthorGenreController(AuthorGenreService authorGenreService) {
+    this.authorGenreService = authorGenreService;
+  }
+
+  @PostMapping("/create")
+  public ResponseEntity<ControllerResponse<?>> createAuthorGenre(
+      @RequestBody AuthorGenreCreateRequest authorGenreCreateRequest) {
+
+    try {
+      authorGenreService.createAuthorGenre(authorGenreCreateRequest);
+    } catch (AuthorGenreAlreadyExistsException
+        | AuthorNotFoundException
+        | GenreNotFoundException exception) {
+      return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ControllerResponse<?>> createAuthorGenre(@RequestBody AuthorGenreCreateRequest authorGenreCreateRequest){
+    return ResponseEntity.ok(new ControllerResponse<>(AUTHOR_GENRE_CREATED_MESSAGE));
+  }
 
-        try {
-            authorGenreService.createAuthorGenre(authorGenreCreateRequest);
-        }catch (AuthorGenreAlreadyExistsException | AuthorNotFoundException | GenreNotFoundException exception){
-            return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
-        }
+  @GetMapping("/all")
+  public ResponseEntity<ControllerResponse<?>> getAllAuthorGenres() {
 
-        return ResponseEntity.ok(new ControllerResponse<>(AUTHOR_GENRE_CREATED_MESSAGE));
-    }
+    return ResponseEntity.ok(new ControllerResponse<>(authorGenreService.getAllAuthorGenres()));
+  }
 
-    @GetMapping("/all")
-    public ResponseEntity<ControllerResponse<?>> getAllAuthorGenres(){
+  @GetMapping("/{authorId}")
+  public ResponseEntity<ControllerResponse<?>> getAuthorGenresByAuthorId(
+      @PathVariable Long authorId) {
 
-        return ResponseEntity.ok(new ControllerResponse<>(authorGenreService.getAllAuthorGenres()));
-    }
-
-    @GetMapping("/{authorId}")
-    public ResponseEntity<ControllerResponse<?>> getAuthorGenresByAuthorId(@PathVariable Long authorId){
-
-        return ResponseEntity.ok(new ControllerResponse<>(authorGenreService.getAuthorGenreByAuthorId(authorId)));
-
-    }
+    return ResponseEntity.ok(
+        new ControllerResponse<>(authorGenreService.getAuthorGenreByAuthorId(authorId)));
+  }
 }
