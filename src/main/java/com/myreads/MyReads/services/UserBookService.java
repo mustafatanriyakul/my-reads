@@ -7,6 +7,7 @@ import com.myreads.MyReads.exceptions.UserNotFoundException;
 import com.myreads.MyReads.models.Author;
 import com.myreads.MyReads.models.Book;
 import com.myreads.MyReads.models.UserBook;
+import com.myreads.MyReads.models.UserBookStatus;
 import com.myreads.MyReads.repositories.AuthorRepository;
 import com.myreads.MyReads.repositories.BookRepository;
 import com.myreads.MyReads.repositories.UserBookRepository;
@@ -56,7 +57,7 @@ public class UserBookService {
         new UserBook(
             userBookCreateRequest.getUserId(),
             userBookCreateRequest.getBookId(),
-            userBookCreateRequest.getDateRead()));
+            userBookCreateRequest.getStatus()));
   }
 
   public List<UserBookResponseDTO> getUserBookByUserId(Long userId) {
@@ -88,9 +89,10 @@ public class UserBookService {
       String bookTitle = book.get().getTitle();
       String authorName = book.get().getAuthor().getName();
       Long authorId = book.get().getAuthorId();
+      UserBookStatus status = userBook.getStatus();
 
       UserBookResponseDTO userBookResponseDTO =
-          new UserBookResponseDTO(bookTitle, authorName, dateRead, dateAdded, authorId);
+          new UserBookResponseDTO(bookTitle, authorName, dateRead, dateAdded, authorId, status);
 
       userBookResponseDTOS.add(userBookResponseDTO);
     }

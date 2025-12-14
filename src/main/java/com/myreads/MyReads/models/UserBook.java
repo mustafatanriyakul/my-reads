@@ -23,13 +23,15 @@ public class UserBook {
   private LocalDate dateRead;
   private LocalDate dateAdded;
 
+  private UserBookStatus status;
+
   @CreatedDate private LocalDateTime createdAt;
   @LastModifiedDate private LocalDateTime updatedAt;
 
-  public UserBook(Long userId, Long bookId, LocalDate dateRead) {
+  public UserBook(Long userId, Long bookId, UserBookStatus status) {
     this.userId = userId;
     this.bookId = bookId;
-    this.dateRead = dateRead;
+    this.status = status;
     this.dateAdded = LocalDate.now();
   }
 
