@@ -38,26 +38,22 @@ public class UserBookService {
     this.authorRepository = authorRepository;
   }
 
-  public void addBookToUserBooks(UserBookCreateRequest userBookCreateRequest) {
+  public void addBookToUserBooks(UserBookCreateRequest userBookCreateRequest, Long userId) {
 
-    if (userRepository.findById(userBookCreateRequest.getUserId()).isEmpty()) {
-      throw new UserNotFoundException(userBookCreateRequest.getUserId());
+    if (userRepository.findById(userId).isEmpty()) {
+      throw new UserNotFoundException(userId);
     }
 
     if (bookRepository.findById(userBookCreateRequest.getBookId()).isEmpty()) {
       throw new BookNotFoundException(userBookCreateRequest.getBookId());
     }
 
-    if (userBookRepository.existsByUserIdAndBookId(
-        userBookCreateRequest.getUserId(), userBookCreateRequest.getBookId())) {
+    if (userBookRepository.existsByUserIdAndBookId(userId, userBookCreateRequest.getBookId())) {
       throw new UserAlreadyHasThisBookException(userBookCreateRequest.getBookId());
     }
 
     userBookRepository.save(
-        new UserBook(
-            userBookCreateRequest.getUserId(),
-            userBookCreateRequest.getBookId(),
-            userBookCreateRequest.getStatus()));
+        new UserBook(userId, userBookCreateRequest.getBookId(), userBookCreateRequest.getStatus()));
   }
 
   public List<UserBookResponseDTO> getUserBookByUserId(Long userId) {

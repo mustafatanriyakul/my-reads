@@ -54,6 +54,7 @@ public class AuthorService {
 
       BookResponseDTO bookResponseDTO =
           new BookResponseDTO(
+              book.getId(),
               book.getTitle(),
               book.getAuthor().getName(),
               book.getIsbn(),

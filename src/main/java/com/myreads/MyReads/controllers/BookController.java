@@ -1,8 +1,6 @@
 package com.myreads.MyReads.controllers;
 
 import com.myreads.MyReads.common.ControllerResponse;
-import com.myreads.MyReads.exceptions.AuthorNotFoundException;
-import com.myreads.MyReads.exceptions.BookAlreadyExistsException;
 import com.myreads.MyReads.dto.BookCreateRequest;
 import com.myreads.MyReads.services.BookService;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/books")
-@CrossOrigin
 public class BookController {
-  public final String BOOK_CREATED_MESSAGE = "Book created";
+  public static final String BOOK_CREATED_MESSAGE = "Book created.";
+  public static final String ALL_BOOKS_FETCHED_MESSAGE = "All books fetched.";
   private final BookService bookService;
 
   public BookController(BookService bookService) {
@@ -23,17 +21,14 @@ public class BookController {
   public ResponseEntity<ControllerResponse<String>> create(
       @RequestBody BookCreateRequest bookCreateRequest) {
 
-    try {
-      bookService.createBook(bookCreateRequest);
-    } catch (AuthorNotFoundException | BookAlreadyExistsException exception) {
-      return ResponseEntity.badRequest().body(new ControllerResponse<>(exception.getMessage()));
-    }
+    bookService.createBook(bookCreateRequest);
 
-    return ResponseEntity.ok(new ControllerResponse<>(BOOK_CREATED_MESSAGE));
+    return ResponseEntity.ok(ControllerResponse.success(BOOK_CREATED_MESSAGE));
   }
 
   @GetMapping("/all")
   public ResponseEntity<ControllerResponse<?>> getAll() {
-    return ResponseEntity.ok(new ControllerResponse<>(bookService.getAllBooks()));
+    return ResponseEntity.ok(
+        ControllerResponse.success(ALL_BOOKS_FETCHED_MESSAGE, bookService.getAllBooks()));
   }
 }

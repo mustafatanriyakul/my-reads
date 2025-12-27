@@ -1,6 +1,7 @@
 package com.myreads.MyReads.services;
 
 import com.myreads.MyReads.dto.BookResponseDTO;
+import com.myreads.MyReads.exceptions.BookAlreadyExistsException;
 import com.myreads.MyReads.models.Book;
 import com.myreads.MyReads.repositories.BookRepository;
 import com.myreads.MyReads.dto.BookCreateRequest;
@@ -18,6 +19,11 @@ public class BookService {
   }
 
   public void createBook(BookCreateRequest bookCreateRequest) {
+
+    if (bookRepository.findByTitle(bookCreateRequest.getTitle()).isPresent()) {
+
+      throw new BookAlreadyExistsException(bookCreateRequest.getTitle());
+    }
 
     Book book =
         new Book(
@@ -38,6 +44,7 @@ public class BookService {
 
       BookResponseDTO bookResponse =
           new BookResponseDTO(
+              book.getId(),
               book.getTitle(),
               book.getAuthor().getName(),
               book.getIsbn(),
