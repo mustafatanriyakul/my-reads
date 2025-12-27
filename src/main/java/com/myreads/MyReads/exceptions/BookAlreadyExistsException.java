@@ -1,7 +1,10 @@
 package com.myreads.MyReads.exceptions;
 
-public class BookAlreadyExistsException extends RuntimeException {
+import com.myreads.MyReads.common.BaseException;
+import org.springframework.http.HttpStatus;
+
+public class BookAlreadyExistsException extends BaseException {
   public BookAlreadyExistsException(String title) {
-    super("Book with title '" + title + "' already exists in database.");
+    super("Book already exists: " + title, "BOOK_ALREADY_EXISTS", HttpStatus.CONFLICT);
   }
 }
