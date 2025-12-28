@@ -5,6 +5,5 @@ import lombok.Data;
 @Data
 public class GenreCreateRequest {
 
-    private String name;
-
+  private String name;
 }

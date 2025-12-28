@@ -1,8 +1,11 @@
 package com.myreads.MyReads.exceptions;
 
-public class InvalidUsernameException extends RuntimeException{
+import com.myreads.MyReads.common.BaseException;
+import org.springframework.http.HttpStatus;
 
-    public InvalidUsernameException(String username){
-        super("Username '" + username + "' is invalid.");
-    }
+public class InvalidUsernameException extends BaseException {
+
+  public InvalidUsernameException(String username) {
+    super("Username is invalid: " + username, "INVALID_USERNAME", HttpStatus.BAD_REQUEST);
+  }
 }
