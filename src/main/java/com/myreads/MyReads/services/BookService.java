@@ -2,6 +2,7 @@ package com.myreads.MyReads.services;
 
 import com.myreads.MyReads.dto.BookResponseDTO;
 import com.myreads.MyReads.exceptions.BookAlreadyExistsException;
+import com.myreads.MyReads.exceptions.BookNotFoundException;
 import com.myreads.MyReads.models.Book;
 import com.myreads.MyReads.repositories.BookRepository;
 import com.myreads.MyReads.dto.BookCreateRequest;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -46,14 +48,33 @@ public class BookService {
           new BookResponseDTO(
               book.getId(),
               book.getTitle(),
+              book.getAuthorId(),
               book.getAuthor().getName(),
               book.getIsbn(),
-              book.getDatePublished(),
-              book.getAuthorId());
+              book.getDatePublished());
 
       bookResponseDTOS.add(bookResponse);
     }
 
     return bookResponseDTOS;
+  }
+
+  public BookResponseDTO getBookDetailsByBookId(Long bookId) {
+    Optional<Book> book = bookRepository.findById(bookId);
+
+    if (book.isEmpty()) {
+      throw new BookNotFoundException(bookId);
+    }
+
+    BookResponseDTO bookResponseDTO =
+        new BookResponseDTO(
+            book.get().getId(),
+            book.get().getTitle(),
+            book.get().getAuthorId(),
+            book.get().getAuthor().getName(),
+            book.get().getIsbn(),
+            book.get().getDatePublished());
+
+    return bookResponseDTO;
   }
 }

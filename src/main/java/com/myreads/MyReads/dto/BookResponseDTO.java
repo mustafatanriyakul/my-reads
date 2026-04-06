@@ -10,26 +10,26 @@ public class BookResponseDTO {
 
   private String title;
 
+  private Long authorId;
+
   private String authorName;
 
   private String isbn;
 
   private LocalDate datePublished;
 
-  private Long authorId;
-
   public BookResponseDTO(
       Long id,
       String title,
+      Long authorId,
       String authorName,
       String isbn,
-      LocalDate datePublished,
-      Long authorId) {
+      LocalDate datePublished) {
     this.id = id;
     this.title = title;
+    this.authorId = authorId;
     this.authorName = authorName;
     this.isbn = isbn;
     this.datePublished = datePublished;
-    this.authorId = authorId;
   }
 }

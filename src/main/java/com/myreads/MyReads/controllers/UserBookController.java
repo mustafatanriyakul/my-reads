@@ -30,7 +30,7 @@ public class UserBookController {
   public ResponseEntity<ControllerResponse<String>> addBookUserBooks(
       @RequestBody UserBookCreateRequest userBookCreateRequest, HttpServletRequest request) {
 
-    String token = CookieUtils.extractTokenFromCookies(request);
+    String token = CookieUtils.extractTokenFromCookies(request, "access_token");
     Long userId = jwtService.extractUserId(token);
 
     userBookService.addBookToUserBooks(userBookCreateRequest, userId);
@@ -41,7 +41,7 @@ public class UserBookController {
   public ResponseEntity<ControllerResponse<List<UserBookResponseDTO>>> getUserBooks(
       HttpServletRequest request) {
 
-    String token = CookieUtils.extractTokenFromCookies(request);
+    String token = CookieUtils.extractTokenFromCookies(request, "access_token");
     Long userId = jwtService.extractUserId(token);
 
     List<UserBookResponseDTO> userBookResponseDTOS = userBookService.getUserBookByUserId(userId);
