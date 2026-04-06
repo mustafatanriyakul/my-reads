@@ -28,7 +28,9 @@ public class JwtFilter extends OncePerRequestFilter {
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
     String path = request.getServletPath();
-    return path.equals("/users/login") || path.equals("/users/signup");
+    return path.equals("/users/login")
+        || path.equals("/users/signup")
+        || path.equals("/users/refresh");
   }
 
   @Override
@@ -36,26 +38,17 @@ public class JwtFilter extends OncePerRequestFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
-    String token = null;
+    String accessToken = CookieUtils.extractTokenFromCookies(request, "access_token");
     String username = null;
 
-    if (request.getCookies() != null) {
-      for (Cookie cookie : request.getCookies()) {
-        if ("token".equals(cookie.getName())) {
-          token = cookie.getValue();
-          break;
-        }
-      }
-    }
-
-    if (token != null) {
-      username = jwtService.extractUserName(token);
+    if (accessToken != null) {
+      username = jwtService.extractUserName(accessToken);
 
       if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
         UserDetails userDetails =
             context.getBean(MyUserDetailsService.class).loadUserByUsername(username);
 
-        if (jwtService.validateToken(token, userDetails)) {
+        if (jwtService.validateToken(accessToken, userDetails)) {
           UsernamePasswordAuthenticationToken auth =
               new UsernamePasswordAuthenticationToken(
                   userDetails, null, userDetails.getAuthorities());

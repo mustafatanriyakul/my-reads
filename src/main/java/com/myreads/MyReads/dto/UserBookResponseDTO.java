@@ -8,7 +8,11 @@ import java.time.LocalDate;
 @Data
 public class UserBookResponseDTO {
 
+  private Long bookId;
+
   private String bookTitle;
+
+  private Long authorId;
 
   private String authorName;
 
@@ -16,22 +20,23 @@ public class UserBookResponseDTO {
 
   private LocalDate dateAdded;
 
-  private Long authorId;
-
   private UserBookStatus status;
 
   public UserBookResponseDTO(
+      Long bookId,
       String bookTitle,
+      Long authorId,
       String authorName,
       LocalDate dateRead,
       LocalDate dateAdded,
-      Long authorId,
       UserBookStatus status) {
+    this.bookId = bookId;
     this.bookTitle = bookTitle;
+    this.authorId = authorId;
     this.authorName = authorName;
     this.dateRead = dateRead;
     this.dateAdded = dateAdded;
-    this.authorId = authorId;
+
     this.status = status;
   }
 }

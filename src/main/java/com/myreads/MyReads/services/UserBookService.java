@@ -82,13 +82,15 @@ public class UserBookService {
         continue;
       }
 
+      Long bookId = book.get().getId();
       String bookTitle = book.get().getTitle();
-      String authorName = book.get().getAuthor().getName();
       Long authorId = book.get().getAuthorId();
+      String authorName = book.get().getAuthor().getName();
       UserBookStatus status = userBook.getStatus();
 
       UserBookResponseDTO userBookResponseDTO =
-          new UserBookResponseDTO(bookTitle, authorName, dateRead, dateAdded, authorId, status);
+          new UserBookResponseDTO(
+              bookId, bookTitle, authorId, authorName, dateRead, dateAdded, status);
 
       userBookResponseDTOS.add(userBookResponseDTO);
     }

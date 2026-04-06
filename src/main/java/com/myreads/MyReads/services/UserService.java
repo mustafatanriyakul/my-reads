@@ -1,14 +1,17 @@
 package com.myreads.MyReads.services;
 
+import com.myreads.MyReads.config.CookieUtils;
 import com.myreads.MyReads.dto.UserLoginRequest;
 import com.myreads.MyReads.dto.UserRegisterRequest;
 import com.myreads.MyReads.exceptions.InvalidPasswordException;
 import com.myreads.MyReads.exceptions.InvalidUsernameException;
+import com.myreads.MyReads.exceptions.RefreshTokenExpiredException;
 import com.myreads.MyReads.exceptions.UsernameAlreadyExistsException;
 import com.myreads.MyReads.models.User;
 import com.myreads.MyReads.repositories.UserRepository;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,13 +21,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-  @Autowired private JWTService jwtService;
-
-  @Autowired AuthenticationManager authenticationManager;
-
+  private final JWTService jwtService;
+  private final AuthenticationManager authenticationManager;
   private final UserRepository userRepository;
+  public static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15; //  15 minutes
+  public static final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 24; // 1 day
 
-  public UserService(UserRepository userRepository) {
+  public UserService(
+      JWTService jwtService,
+      AuthenticationManager authenticationManager,
+      UserRepository userRepository) {
+    this.jwtService = jwtService;
+    this.authenticationManager = authenticationManager;
     this.userRepository = userRepository;
   }
 
@@ -43,7 +51,7 @@ public class UserService {
     userRepository.save(newUser);
   }
 
-  public String login(UserLoginRequest loginRequest) {
+  public Long login(UserLoginRequest loginRequest) {
     Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
 
     if (user.isEmpty()) {
@@ -55,9 +63,24 @@ public class UserService {
           new UsernamePasswordAuthenticationToken(
               loginRequest.getUsername(), loginRequest.getPassword()));
 
-      return jwtService.generateToken(user.get().getId(), loginRequest.getUsername());
+      return user.get().getId();
     } catch (BadCredentialsException exception) {
       throw new InvalidPasswordException();
     }
+  }
+
+  public String generateNewAccessToken(HttpServletRequest request) {
+    String refreshToken = CookieUtils.extractTokenFromCookies(request, "refresh_token");
+
+    if (refreshToken == null) {
+      throw new RefreshTokenExpiredException();
+    }
+
+    String username = jwtService.extractUserName(refreshToken);
+    Long userId = jwtService.extractUserId(refreshToken);
+
+    String newAccessToken = jwtService.generateToken(userId, username, ACCESS_TOKEN_EXPIRATION);
+
+    return newAccessToken;
   }
 }

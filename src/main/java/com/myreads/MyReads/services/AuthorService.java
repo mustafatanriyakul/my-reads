@@ -3,6 +3,7 @@ package com.myreads.MyReads.services;
 import com.myreads.MyReads.dto.AuthorResponseDTO;
 import com.myreads.MyReads.dto.BookResponseDTO;
 import com.myreads.MyReads.exceptions.AuthorAlreadyExistsException;
+import com.myreads.MyReads.exceptions.AuthorNotFoundException;
 import com.myreads.MyReads.models.Author;
 import com.myreads.MyReads.models.Book;
 import com.myreads.MyReads.repositories.AuthorRepository;
@@ -56,10 +57,10 @@ public class AuthorService {
           new BookResponseDTO(
               book.getId(),
               book.getTitle(),
+              book.getAuthorId(),
               book.getAuthor().getName(),
               book.getIsbn(),
-              book.getDatePublished(),
-              book.getAuthorId());
+              book.getDatePublished());
 
       booksOfAuthorResponse.add(bookResponseDTO);
     }
@@ -72,7 +73,7 @@ public class AuthorService {
     Optional<Author> author = authorRepository.findById(authorId);
 
     if (author.isEmpty()) {
-      return null;
+      throw new AuthorNotFoundException(authorId);
     }
 
     List<String> genres = authorGenreService.getAuthorGenreByAuthorId(authorId);
