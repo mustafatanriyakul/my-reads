@@ -7,7 +7,9 @@ import com.myreads.MyReads.models.Book;
 import com.myreads.MyReads.repositories.BookRepository;
 import com.myreads.MyReads.dto.BookCreateRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +53,9 @@ public class BookService {
               book.getAuthorId(),
               book.getAuthor().getName(),
               book.getIsbn(),
-              book.getDatePublished());
+              book.getDatePublished(),
+              book.getCoverImageData(),
+              book.getCoverImageType());
 
       bookResponseDTOS.add(bookResponse);
     }
@@ -73,8 +77,22 @@ public class BookService {
             book.get().getAuthorId(),
             book.get().getAuthor().getName(),
             book.get().getIsbn(),
-            book.get().getDatePublished());
+            book.get().getDatePublished(),
+            book.get().getCoverImageData(),
+            book.get().getCoverImageType());
 
     return bookResponseDTO;
+  }
+
+  public void uploadBookCoverImage(Long bookId, MultipartFile file) throws IOException {
+    Optional<Book> book = bookRepository.findById(bookId);
+
+    if (book.isEmpty()) {
+      throw new BookNotFoundException(bookId);
+    }
+
+    book.get().setCoverImageData(file.getBytes());
+    book.get().setCoverImageType(file.getContentType());
+    bookRepository.save(book.get());
   }
 }

@@ -88,13 +88,33 @@ public class UserBookService {
       String authorName = book.get().getAuthor().getName();
       UserBookStatus status = userBook.getStatus();
 
+      byte[] coverImage = book.get().getCoverImageData();
+      String coverImageType = book.get().getCoverImageType();
+
       UserBookResponseDTO userBookResponseDTO =
           new UserBookResponseDTO(
-              bookId, bookTitle, authorId, authorName, dateRead, dateAdded, status);
+              bookId,
+              bookTitle,
+              authorId,
+              authorName,
+              dateRead,
+              dateAdded,
+              status,
+              coverImage,
+              coverImageType);
 
       userBookResponseDTOS.add(userBookResponseDTO);
     }
 
     return userBookResponseDTOS;
+  }
+
+  public void updateUserBookStatus(UserBookCreateRequest userBookCreateRequest, Long userId) {
+
+    UserBook userBook =
+        userBookRepository.findUserBookByUserIdAndBookId(userId, userBookCreateRequest.getBookId());
+
+    userBook.setStatus(userBookCreateRequest.getStatus());
+    userBookRepository.save(userBook);
   }
 }

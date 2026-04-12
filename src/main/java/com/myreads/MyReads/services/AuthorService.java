@@ -60,7 +60,9 @@ public class AuthorService {
               book.getAuthorId(),
               book.getAuthor().getName(),
               book.getIsbn(),
-              book.getDatePublished());
+              book.getDatePublished(),
+              book.getCoverImageData(),
+              book.getCoverImageType());
 
       booksOfAuthorResponse.add(bookResponseDTO);
     }

@@ -47,6 +47,7 @@ public class UserService {
     String encodedPassword = encoder.encode(registerRequest.getPassword());
 
     User newUser = new User(registerRequest.getUsername(), encodedPassword);
+    newUser.setRole(User.Role.USER);
 
     userRepository.save(newUser);
   }
