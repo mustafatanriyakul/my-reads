@@ -35,6 +35,9 @@ public class Book {
 
   @LastModifiedDate private LocalDateTime updatedAt;
 
+  @Lob private byte[] coverImageData;
+  private String coverImageType;
+
   public Book(String title, Long authorId, String isbn, LocalDate datePublished) {
     this.title = title;
     this.authorId = authorId;

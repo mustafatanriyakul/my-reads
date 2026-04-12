@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping("/mybooks")
 public class UserBookController {
   public static final String BOOK_ADDED_MESSAGE = "Book added.";
+  public static final String BOOK_STATUS_CHANGED_MESSAGE = "Book status changed.";
   public static final String BOOKS_FETCHED_MESSAGE = "Book fetched.";
   private final UserBookService userBookService;
 
@@ -48,5 +49,16 @@ public class UserBookController {
 
     return ResponseEntity.ok(
         ControllerResponse.success(BOOKS_FETCHED_MESSAGE, userBookResponseDTOS));
+  }
+
+  @PostMapping("/update")
+  public ResponseEntity<ControllerResponse<?>> updateUserBookStatus(
+      @RequestBody UserBookCreateRequest userBookCreateRequest, HttpServletRequest request) {
+
+    String token = CookieUtils.extractTokenFromCookies(request, "access_token");
+    Long userId = jwtService.extractUserId(token);
+
+    userBookService.updateUserBookStatus(userBookCreateRequest, userId);
+    return ResponseEntity.ok(ControllerResponse.success(BOOK_STATUS_CHANGED_MESSAGE));
   }
 }

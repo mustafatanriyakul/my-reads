@@ -5,6 +5,9 @@ import com.myreads.MyReads.dto.BookCreateRequest;
 import com.myreads.MyReads.services.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/books")
@@ -38,5 +41,13 @@ public class BookController {
     return ResponseEntity.ok(
         ControllerResponse.success(
             BOOK_FETCHED_MESSAGE, bookService.getBookDetailsByBookId(bookId)));
+  }
+
+  @PostMapping("/{bookId}/cover")
+  public ResponseEntity<ControllerResponse<?>> uploadBookCoverImage(
+      @PathVariable Long bookId, @RequestParam("file") MultipartFile file) throws IOException {
+
+    bookService.uploadBookCoverImage(bookId, file);
+    return ResponseEntity.ok(ControllerResponse.success("Cover image uploaded."));
   }
 }
