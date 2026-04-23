@@ -1,34 +1,53 @@
 package com.myreads.MyReads.dto;
 
+import com.myreads.MyReads.models.UserBookStatus;
+import jakarta.persistence.Lob;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Base64;
 
 @Data
 public class UserBookResponseDTO {
 
-    private String bookTitle;
+  private Long bookId;
 
-    private String authorName;
+  private String bookTitle;
 
-    private LocalDate dateRead;
+  private Long authorId;
 
-    private LocalDate dateAdded;
+  private String authorName;
 
-    private Long authorId;
+  private LocalDate dateRead;
 
+  private LocalDate dateAdded;
 
-    public UserBookResponseDTO(String bookTitle, String authorName, LocalDate dateRead, LocalDate dateAdded, Long authorId) {
-        this.bookTitle = bookTitle;
-        this.authorName = authorName;
-        this.dateRead = dateRead;
-        this.dateAdded = dateAdded;
-        this.authorId = authorId;
+  private UserBookStatus status;
+
+  private String coverImageBase64;
+  private String coverImageType;
+
+  public UserBookResponseDTO(
+      Long bookId,
+      String bookTitle,
+      Long authorId,
+      String authorName,
+      LocalDate dateRead,
+      LocalDate dateAdded,
+      UserBookStatus status,
+      byte[] coverImage,
+      String coverImageType) {
+    this.bookId = bookId;
+    this.bookTitle = bookTitle;
+    this.authorId = authorId;
+    this.authorName = authorName;
+    this.dateRead = dateRead;
+    this.dateAdded = dateAdded;
+    this.status = status;
+    this.coverImageType = coverImageType;
+
+    if (coverImage != null) {
+      this.coverImageBase64 = Base64.getEncoder().encodeToString(coverImage);
     }
+  }
 }
-
-
-
-
-
-

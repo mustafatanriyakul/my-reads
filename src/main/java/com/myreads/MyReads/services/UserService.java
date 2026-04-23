@@ -1,66 +1,96 @@
 package com.myreads.MyReads.services;
 
-import com.myreads.MyReads.exceptions.InvalidPasswordException;
-import com.myreads.MyReads.exceptions.InvalidUsernameException;
-import com.myreads.MyReads.exceptions.UsernameAlreadyExistsException;
-import com.myreads.MyReads.models.User;
-import com.myreads.MyReads.repositories.UserRepository;
+import com.myreads.MyReads.config.CookieUtils;
 import com.myreads.MyReads.dto.UserLoginRequest;
 import com.myreads.MyReads.dto.UserRegisterRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-
+import com.myreads.MyReads.exceptions.InvalidPasswordException;
+import com.myreads.MyReads.exceptions.InvalidUsernameException;
+import com.myreads.MyReads.exceptions.RefreshTokenExpiredException;
+import com.myreads.MyReads.exceptions.UsernameAlreadyExistsException;
+import com.myreads.MyReads.models.User;
+import com.myreads.MyReads.models.UserPrincipal;
+import com.myreads.MyReads.repositories.UserRepository;
 import java.util.Optional;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private JWTService jwtService;
+  private final JWTService jwtService;
+  private final AuthenticationManager authenticationManager;
+  private final UserRepository userRepository;
+  public static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15; //  15 minutes
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+  public UserService(
+      JWTService jwtService,
+      AuthenticationManager authenticationManager,
+      UserRepository userRepository) {
+    this.jwtService = jwtService;
+    this.authenticationManager = authenticationManager;
+    this.userRepository = userRepository;
+  }
 
-    private final UserRepository userRepository;
+  private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+  public void signup(UserRegisterRequest registerRequest) {
+
+    if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+      throw new UsernameAlreadyExistsException(registerRequest.getUsername());
     }
 
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    String encodedPassword = encoder.encode(registerRequest.getPassword());
 
-    public User signup(UserRegisterRequest registerRequest) {
+    User newUser = new User(registerRequest.getUsername(), encodedPassword);
+    newUser.setRole(User.Role.USER);
 
-        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
-            throw new UsernameAlreadyExistsException(registerRequest.getUsername());
-        }
+    userRepository.save(newUser);
+  }
 
-        String encodedPassword = encoder.encode(registerRequest.getPassword());
+  public Long login(UserLoginRequest loginRequest) {
+    Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
 
-        User newUser = new User(registerRequest.getUsername(),
-                encodedPassword);
-
-        userRepository.save(newUser);
-
-        return newUser;
+    if (user.isEmpty()) {
+      throw new InvalidUsernameException(loginRequest.getUsername());
     }
 
+    try {
+      authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(
+              loginRequest.getUsername(), loginRequest.getPassword()));
 
-    public String login(UserLoginRequest loginRequest) {
-        Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
-
-        if (user.isEmpty()) {
-            throw new InvalidUsernameException(loginRequest.getUsername());
-        }
-
-        if (! encoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
-            throw new InvalidPasswordException();
-        }
-
-        return jwtService.generateToken(loginRequest.getUsername());
+      return user.get().getId();
+    } catch (BadCredentialsException exception) {
+      throw new InvalidPasswordException();
     }
+  }
+
+  public String generateNewAccessToken(HttpServletRequest request) {
+    String refreshToken = CookieUtils.extractTokenFromCookies(request, "refresh_token");
+
+    if (refreshToken == null) {
+      throw new RefreshTokenExpiredException();
+    }
+
+    String username = jwtService.extractUserName(refreshToken);
+    Long userId = jwtService.extractUserId(refreshToken);
+
+    String newAccessToken = jwtService.generateToken(userId, username, ACCESS_TOKEN_EXPIRATION);
+
+    return newAccessToken;
+  }
+
+  public User getCurrentUser() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+
+    return userPrincipal.getUser();
+  }
 }

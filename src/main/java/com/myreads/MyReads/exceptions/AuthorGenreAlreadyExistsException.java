@@ -1,7 +1,10 @@
 package com.myreads.MyReads.exceptions;
 
-public class AuthorGenreAlreadyExistsException extends RuntimeException{
-    public AuthorGenreAlreadyExistsException() {
-        super("This AuthorGenre already exists.");
-    }
+import com.myreads.MyReads.common.BaseException;
+import org.springframework.http.HttpStatus;
+
+public class AuthorGenreAlreadyExistsException extends BaseException {
+  public AuthorGenreAlreadyExistsException() {
+    super("AuthorGenre already exists: ", "AUTHOR_GENRE_ALREADY_EXISTS", HttpStatus.CONFLICT);
+  }
 }

@@ -3,26 +3,44 @@ package com.myreads.MyReads.dto;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Base64;
 
 @Data
 public class BookResponseDTO {
+  private Long id;
 
-    private String title;
+  private String title;
 
-    private String authorName;
+  private Long authorId;
 
-    private String isbn;
+  private String authorName;
 
-    private LocalDate datePublished;
+  private String isbn;
 
-    private Long authorId;
+  private LocalDate datePublished;
 
+  private String coverImageBase64;
+  private String coverImageType;
 
-    public BookResponseDTO(String title, String authorName, String isbn, LocalDate datePublished, Long authorId) {
-        this.title = title;
-        this.authorName = authorName;
-        this.isbn = isbn;
-        this.datePublished = datePublished;
-        this.authorId = authorId;
+  public BookResponseDTO(
+      Long id,
+      String title,
+      Long authorId,
+      String authorName,
+      String isbn,
+      LocalDate datePublished,
+      byte[] coverImage,
+      String coverImageType) {
+    this.id = id;
+    this.title = title;
+    this.authorId = authorId;
+    this.authorName = authorName;
+    this.isbn = isbn;
+    this.datePublished = datePublished;
+    this.coverImageType = coverImageType;
+
+    if (coverImage != null) {
+      this.coverImageBase64 = Base64.getEncoder().encodeToString(coverImage);
     }
+  }
 }
