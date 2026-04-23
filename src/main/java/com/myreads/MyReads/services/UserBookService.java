@@ -12,7 +12,7 @@ import com.myreads.MyReads.repositories.AuthorRepository;
 import com.myreads.MyReads.repositories.BookRepository;
 import com.myreads.MyReads.repositories.UserBookRepository;
 import com.myreads.MyReads.repositories.UserRepository;
-import com.myreads.MyReads.dto.UserBookCreateRequest;
+import com.myreads.MyReads.dto.BookStatusRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,22 +38,22 @@ public class UserBookService {
     this.authorRepository = authorRepository;
   }
 
-  public void addBookToUserBooks(UserBookCreateRequest userBookCreateRequest, Long userId) {
+  public void addBookToUserBooks(BookStatusRequest bookStatusRequest, Long userId) {
 
     if (userRepository.findById(userId).isEmpty()) {
       throw new UserNotFoundException(userId);
     }
 
-    if (bookRepository.findById(userBookCreateRequest.getBookId()).isEmpty()) {
-      throw new BookNotFoundException(userBookCreateRequest.getBookId());
+    if (bookRepository.findById(bookStatusRequest.getBookId()).isEmpty()) {
+      throw new BookNotFoundException(bookStatusRequest.getBookId());
     }
 
-    if (userBookRepository.existsByUserIdAndBookId(userId, userBookCreateRequest.getBookId())) {
-      throw new UserAlreadyHasThisBookException(userBookCreateRequest.getBookId());
+    if (userBookRepository.existsByUserIdAndBookId(userId, bookStatusRequest.getBookId())) {
+      throw new UserAlreadyHasThisBookException(bookStatusRequest.getBookId());
     }
 
     userBookRepository.save(
-        new UserBook(userId, userBookCreateRequest.getBookId(), userBookCreateRequest.getStatus()));
+        new UserBook(userId, bookStatusRequest.getBookId(), bookStatusRequest.getStatus()));
   }
 
   public List<UserBookResponseDTO> getUserBookByUserId(Long userId) {
@@ -109,12 +109,12 @@ public class UserBookService {
     return userBookResponseDTOS;
   }
 
-  public void updateUserBookStatus(UserBookCreateRequest userBookCreateRequest, Long userId) {
+  public void updateUserBookStatus(BookStatusRequest bookStatusRequest, Long userId) {
 
     UserBook userBook =
-        userBookRepository.findUserBookByUserIdAndBookId(userId, userBookCreateRequest.getBookId());
+        userBookRepository.findUserBookByUserIdAndBookId(userId, bookStatusRequest.getBookId());
 
-    userBook.setStatus(userBookCreateRequest.getStatus());
+    userBook.setStatus(bookStatusRequest.getStatus());
     userBookRepository.save(userBook);
   }
 }

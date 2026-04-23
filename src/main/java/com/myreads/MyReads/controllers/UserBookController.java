@@ -1,12 +1,10 @@
 package com.myreads.MyReads.controllers;
 
 import com.myreads.MyReads.common.ControllerResponse;
-import com.myreads.MyReads.config.CookieUtils;
 import com.myreads.MyReads.dto.UserBookResponseDTO;
-import com.myreads.MyReads.dto.UserBookCreateRequest;
-import com.myreads.MyReads.services.JWTService;
+import com.myreads.MyReads.dto.BookStatusRequest;
 import com.myreads.MyReads.services.UserBookService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.myreads.MyReads.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,31 +17,27 @@ public class UserBookController {
   public static final String BOOK_STATUS_CHANGED_MESSAGE = "Book status changed.";
   public static final String BOOKS_FETCHED_MESSAGE = "Book fetched.";
   private final UserBookService userBookService;
+  private final UserService userService;
 
-  private final JWTService jwtService;
-
-  public UserBookController(UserBookService userBookService, JWTService jwtService) {
+  public UserBookController(UserBookService userBookService, UserService userService) {
     this.userBookService = userBookService;
-    this.jwtService = jwtService;
+    this.userService = userService;
   }
 
   @PostMapping("/add")
   public ResponseEntity<ControllerResponse<String>> addBookUserBooks(
-      @RequestBody UserBookCreateRequest userBookCreateRequest, HttpServletRequest request) {
+      @RequestBody BookStatusRequest bookStatusRequest) {
 
-    String token = CookieUtils.extractTokenFromCookies(request, "access_token");
-    Long userId = jwtService.extractUserId(token);
+    Long userId = userService.getCurrentUser().getId();
 
-    userBookService.addBookToUserBooks(userBookCreateRequest, userId);
+    userBookService.addBookToUserBooks(bookStatusRequest, userId);
     return ResponseEntity.ok(ControllerResponse.success(BOOK_ADDED_MESSAGE));
   }
 
   @GetMapping()
-  public ResponseEntity<ControllerResponse<List<UserBookResponseDTO>>> getUserBooks(
-      HttpServletRequest request) {
+  public ResponseEntity<ControllerResponse<List<UserBookResponseDTO>>> getUserBooks() {
 
-    String token = CookieUtils.extractTokenFromCookies(request, "access_token");
-    Long userId = jwtService.extractUserId(token);
+    Long userId = userService.getCurrentUser().getId();
 
     List<UserBookResponseDTO> userBookResponseDTOS = userBookService.getUserBookByUserId(userId);
 
@@ -53,12 +47,11 @@ public class UserBookController {
 
   @PostMapping("/update")
   public ResponseEntity<ControllerResponse<?>> updateUserBookStatus(
-      @RequestBody UserBookCreateRequest userBookCreateRequest, HttpServletRequest request) {
+      @RequestBody BookStatusRequest bookStatusRequest) {
 
-    String token = CookieUtils.extractTokenFromCookies(request, "access_token");
-    Long userId = jwtService.extractUserId(token);
+    Long userId = userService.getCurrentUser().getId();
 
-    userBookService.updateUserBookStatus(userBookCreateRequest, userId);
+    userBookService.updateUserBookStatus(bookStatusRequest, userId);
     return ResponseEntity.ok(ControllerResponse.success(BOOK_STATUS_CHANGED_MESSAGE));
   }
 }

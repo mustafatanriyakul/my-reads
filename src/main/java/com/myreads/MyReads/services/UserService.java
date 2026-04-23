@@ -8,6 +8,7 @@ import com.myreads.MyReads.exceptions.InvalidUsernameException;
 import com.myreads.MyReads.exceptions.RefreshTokenExpiredException;
 import com.myreads.MyReads.exceptions.UsernameAlreadyExistsException;
 import com.myreads.MyReads.models.User;
+import com.myreads.MyReads.models.UserPrincipal;
 import com.myreads.MyReads.repositories.UserRepository;
 import java.util.Optional;
 
@@ -15,6 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +28,6 @@ public class UserService {
   private final AuthenticationManager authenticationManager;
   private final UserRepository userRepository;
   public static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15; //  15 minutes
-  public static final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 24; // 1 day
 
   public UserService(
       JWTService jwtService,
@@ -83,5 +85,12 @@ public class UserService {
     String newAccessToken = jwtService.generateToken(userId, username, ACCESS_TOKEN_EXPIRATION);
 
     return newAccessToken;
+  }
+
+  public User getCurrentUser() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+
+    return userPrincipal.getUser();
   }
 }
