@@ -6,9 +6,11 @@ import com.myreads.MyReads.exceptions.AuthorAlreadyExistsException;
 import com.myreads.MyReads.exceptions.AuthorNotFoundException;
 import com.myreads.MyReads.models.Author;
 import com.myreads.MyReads.models.Book;
+import com.myreads.MyReads.models.UserBook;
 import com.myreads.MyReads.repositories.AuthorRepository;
 import com.myreads.MyReads.dto.AuthorCreateRequest;
 import com.myreads.MyReads.repositories.BookRepository;
+import com.myreads.MyReads.repositories.UserBookRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,14 +24,17 @@ public class AuthorService {
   private final BookRepository bookRepository;
 
   private final AuthorGenreService authorGenreService;
+  private final UserBookRepository userBookRepository;
 
   public AuthorService(
       AuthorRepository authorRepository,
       BookRepository bookRepository,
-      AuthorGenreService authorGenreService) {
+      AuthorGenreService authorGenreService,
+      UserBookRepository userBookRepository) {
     this.authorRepository = authorRepository;
     this.bookRepository = bookRepository;
     this.authorGenreService = authorGenreService;
+    this.userBookRepository = userBookRepository;
   }
 
   public void create(AuthorCreateRequest authorCreateRequest) {
@@ -45,9 +50,10 @@ public class AuthorService {
     return authorRepository.findAll();
   }
 
-  public List<BookResponseDTO> getBookListByAuthorId(Long authorId) {
+  public List<BookResponseDTO> getBookListByAuthorId(Long authorId, Long userId) {
 
     List<Book> booksOfAuthor = bookRepository.findAllByAuthorId(authorId);
+    List<UserBook> userBooks = userBookRepository.findByUserId(userId);
 
     List<BookResponseDTO> booksOfAuthorResponse = new ArrayList<>();
 
@@ -63,6 +69,13 @@ public class AuthorService {
               book.getDatePublished(),
               book.getCoverImageData(),
               book.getCoverImageType());
+
+      for (UserBook userBook : userBooks) {
+        if (userBook.getBookId().equals(book.getId())) {
+          bookResponseDTO.setStatus(userBook.getStatus());
+          break;
+        }
+      }
 
       booksOfAuthorResponse.add(bookResponseDTO);
     }

@@ -20,7 +20,8 @@ public class UserBook {
 
   private Long userId;
   private Long bookId;
-  private LocalDate dateRead;
+  private LocalDate dateStarted;
+  private LocalDate dateFinished;
   private LocalDate dateAdded;
 
   private UserBookStatus status;

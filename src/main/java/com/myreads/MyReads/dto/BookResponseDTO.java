@@ -1,5 +1,6 @@
 package com.myreads.MyReads.dto;
 
+import com.myreads.MyReads.models.UserBookStatus;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -21,6 +22,8 @@ public class BookResponseDTO {
 
   private String coverImageBase64;
   private String coverImageType;
+
+  private UserBookStatus status;
 
   public BookResponseDTO(
       Long id,

@@ -3,6 +3,7 @@ package com.myreads.MyReads.controllers;
 import com.myreads.MyReads.common.ControllerResponse;
 import com.myreads.MyReads.dto.BookCreateRequest;
 import com.myreads.MyReads.services.BookService;
+import com.myreads.MyReads.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,9 +17,11 @@ public class BookController {
   public static final String ALL_BOOKS_FETCHED_MESSAGE = "All books fetched.";
   public static final String BOOK_FETCHED_MESSAGE = "Book fetched.";
   private final BookService bookService;
+  private final UserService userService;
 
-  public BookController(BookService bookService) {
+  public BookController(BookService bookService, UserService userService) {
     this.bookService = bookService;
+    this.userService = userService;
   }
 
   @PostMapping("/create")
@@ -32,8 +35,9 @@ public class BookController {
 
   @GetMapping("/all")
   public ResponseEntity<ControllerResponse<?>> getAll() {
+    Long userId = userService.getCurrentUser().getId();
     return ResponseEntity.ok(
-        ControllerResponse.success(ALL_BOOKS_FETCHED_MESSAGE, bookService.getAllBooks()));
+        ControllerResponse.success(ALL_BOOKS_FETCHED_MESSAGE, bookService.getAllBooks(userId)));
   }
 
   @GetMapping("/{bookId}")

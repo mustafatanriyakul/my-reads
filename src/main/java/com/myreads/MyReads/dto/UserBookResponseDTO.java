@@ -1,7 +1,6 @@
 package com.myreads.MyReads.dto;
 
 import com.myreads.MyReads.models.UserBookStatus;
-import jakarta.persistence.Lob;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -18,7 +17,8 @@ public class UserBookResponseDTO {
 
   private String authorName;
 
-  private LocalDate dateRead;
+  private LocalDate dateStarted;
+  private LocalDate dateFinished;
 
   private LocalDate dateAdded;
 
@@ -32,7 +32,8 @@ public class UserBookResponseDTO {
       String bookTitle,
       Long authorId,
       String authorName,
-      LocalDate dateRead,
+      LocalDate dateStarted,
+      LocalDate dateFinished,
       LocalDate dateAdded,
       UserBookStatus status,
       byte[] coverImage,
@@ -41,7 +42,8 @@ public class UserBookResponseDTO {
     this.bookTitle = bookTitle;
     this.authorId = authorId;
     this.authorName = authorName;
-    this.dateRead = dateRead;
+    this.dateStarted = dateStarted;
+    this.dateFinished = dateFinished;
     this.dateAdded = dateAdded;
     this.status = status;
     this.coverImageType = coverImageType;

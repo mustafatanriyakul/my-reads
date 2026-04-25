@@ -1,6 +1,7 @@
 package com.myreads.MyReads.controllers;
 
 import com.myreads.MyReads.common.ControllerResponse;
+import com.myreads.MyReads.dto.BookReviewRequest;
 import com.myreads.MyReads.dto.UserBookResponseDTO;
 import com.myreads.MyReads.dto.BookStatusRequest;
 import com.myreads.MyReads.services.UserBookService;
@@ -53,5 +54,16 @@ public class UserBookController {
 
     userBookService.updateUserBookStatus(bookStatusRequest, userId);
     return ResponseEntity.ok(ControllerResponse.success(BOOK_STATUS_CHANGED_MESSAGE));
+  }
+
+  @PostMapping("/review")
+  public ResponseEntity<ControllerResponse<?>> saveReview(
+      @RequestBody BookReviewRequest bookReviewRequest) {
+
+    Long userId = userService.getCurrentUser().getId();
+
+    userBookService.saveReview(bookReviewRequest, userId);
+
+    return ResponseEntity.ok(ControllerResponse.success("Review saved"));
   }
 }
