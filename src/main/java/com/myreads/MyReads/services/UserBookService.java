@@ -1,7 +1,9 @@
 package com.myreads.MyReads.services;
 
+import com.myreads.MyReads.dto.BookReviewRequest;
 import com.myreads.MyReads.dto.UserBookResponseDTO;
 import com.myreads.MyReads.exceptions.BookNotFoundException;
+import com.myreads.MyReads.exceptions.InvalidReviewDateException;
 import com.myreads.MyReads.exceptions.UserAlreadyHasThisBookException;
 import com.myreads.MyReads.exceptions.UserNotFoundException;
 import com.myreads.MyReads.models.Author;
@@ -67,7 +69,8 @@ public class UserBookService {
 
     for (UserBook userBook : userBooks) {
 
-      LocalDate dateRead = userBook.getDateRead();
+      LocalDate dateStarted = userBook.getDateStarted();
+      LocalDate dateFinished = userBook.getDateFinished();
       LocalDate dateAdded = userBook.getDateAdded();
 
       Optional<Book> book = bookRepository.findById(userBook.getBookId());
@@ -97,7 +100,8 @@ public class UserBookService {
               bookTitle,
               authorId,
               authorName,
-              dateRead,
+              dateStarted,
+              dateFinished,
               dateAdded,
               status,
               coverImage,
@@ -115,6 +119,28 @@ public class UserBookService {
         userBookRepository.findUserBookByUserIdAndBookId(userId, bookStatusRequest.getBookId());
 
     userBook.setStatus(bookStatusRequest.getStatus());
+    userBookRepository.save(userBook);
+  }
+
+  public void saveReview(BookReviewRequest bookReviewRequest, Long userId) {
+
+    if (bookReviewRequest.getDateStarted() == null
+        || bookReviewRequest.getDateFinished() == null
+        || bookReviewRequest.getDateFinished().isBefore(bookReviewRequest.getDateStarted())) {
+      throw new InvalidReviewDateException();
+    }
+
+    UserBook userBook =
+        userBookRepository.findUserBookByUserIdAndBookId(userId, bookReviewRequest.getBookId());
+
+    if (userBook == null) {
+      userBook = new UserBook(userId, bookReviewRequest.getBookId(), UserBookStatus.READ);
+    }
+
+    userBook.setStatus(UserBookStatus.READ);
+    userBook.setDateStarted(bookReviewRequest.getDateStarted());
+    userBook.setDateFinished(bookReviewRequest.getDateFinished());
+
     userBookRepository.save(userBook);
   }
 }

@@ -4,8 +4,10 @@ import com.myreads.MyReads.dto.BookResponseDTO;
 import com.myreads.MyReads.exceptions.BookAlreadyExistsException;
 import com.myreads.MyReads.exceptions.BookNotFoundException;
 import com.myreads.MyReads.models.Book;
+import com.myreads.MyReads.models.UserBook;
 import com.myreads.MyReads.repositories.BookRepository;
 import com.myreads.MyReads.dto.BookCreateRequest;
+import com.myreads.MyReads.repositories.UserBookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,9 +19,11 @@ import java.util.Optional;
 @Service
 public class BookService {
   private final BookRepository bookRepository;
+  private final UserBookRepository userBookRepository;
 
-  public BookService(BookRepository bookRepository) {
+  public BookService(BookRepository bookRepository, UserBookRepository userBookRepository) {
     this.bookRepository = bookRepository;
+    this.userBookRepository = userBookRepository;
   }
 
   public void createBook(BookCreateRequest bookCreateRequest) {
@@ -39,10 +43,11 @@ public class BookService {
     bookRepository.save(book);
   }
 
-  public List<BookResponseDTO> getAllBooks() {
+  public List<BookResponseDTO> getAllBooks(Long userId) {
 
     List<BookResponseDTO> bookResponseDTOS = new ArrayList<>();
     List<Book> books = bookRepository.findAll();
+    List<UserBook> userBooks = userBookRepository.findByUserId(userId);
 
     for (Book book : books) {
 
@@ -56,6 +61,13 @@ public class BookService {
               book.getDatePublished(),
               book.getCoverImageData(),
               book.getCoverImageType());
+
+      for (UserBook userBook : userBooks) {
+        if (userBook.getBookId().equals(book.getId())) {
+          bookResponse.setStatus(userBook.getStatus());
+          break;
+        }
+      }
 
       bookResponseDTOS.add(bookResponse);
     }
