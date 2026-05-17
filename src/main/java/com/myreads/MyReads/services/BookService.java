@@ -107,4 +107,28 @@ public class BookService {
     book.get().setCoverImageType(file.getContentType());
     bookRepository.save(book.get());
   }
+
+  public List<BookResponseDTO> searchBooks(String query) {
+
+    List<Book> searchedBooks = bookRepository.findTop5ByTitleContainingIgnoreCase(query);
+
+    List<BookResponseDTO> bookResponseDTOS = new ArrayList<>();
+
+    for (Book book : searchedBooks) {
+      BookResponseDTO bookResponseDTO =
+          new BookResponseDTO(
+              book.getId(),
+              book.getTitle(),
+              book.getAuthorId(),
+              book.getAuthor().getName(),
+              book.getIsbn(),
+              book.getDatePublished(),
+              book.getCoverImageData(),
+              book.getCoverImageType());
+
+      bookResponseDTOS.add(bookResponseDTO);
+    }
+
+    return bookResponseDTOS;
+  }
 }

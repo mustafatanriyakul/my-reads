@@ -29,6 +29,12 @@ public class GenreService {
     genreRepository.save(new Genre(genreName));
   }
 
+  public void createManyGenre(List<GenreCreateRequest> genreCreateRequests) {
+    for (GenreCreateRequest request : genreCreateRequests) {
+      createGenre(request);
+    }
+  }
+
   public List<Genre> getAllGenres() {
     return genreRepository.findAll();
   }

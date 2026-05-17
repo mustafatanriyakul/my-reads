@@ -6,6 +6,8 @@ import com.myreads.MyReads.services.GenreService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/genres")
 public class GenreController {
@@ -24,6 +26,15 @@ public class GenreController {
       @RequestBody GenreCreateRequest genreCreateRequest) {
 
     genreService.createGenre(genreCreateRequest);
+
+    return ResponseEntity.ok(ControllerResponse.success(GENRE_CREATED_MESSAGE));
+  }
+
+  @PostMapping("/create-many")
+  public ResponseEntity<ControllerResponse<?>> createManyGenre(
+      @RequestBody List<GenreCreateRequest> genreCreateRequests) {
+
+    genreService.createManyGenre(genreCreateRequests);
 
     return ResponseEntity.ok(ControllerResponse.success(GENRE_CREATED_MESSAGE));
   }

@@ -16,6 +16,7 @@ public class BookController {
   public static final String BOOK_CREATED_MESSAGE = "Book created.";
   public static final String ALL_BOOKS_FETCHED_MESSAGE = "All books fetched.";
   public static final String BOOK_FETCHED_MESSAGE = "Book fetched.";
+  public static final String SEARCHED_BOOKS_FETCHED_MESSAGE = "Searched books fetched.";
   private final BookService bookService;
   private final UserService userService;
 
@@ -53,5 +54,12 @@ public class BookController {
 
     bookService.uploadBookCoverImage(bookId, file);
     return ResponseEntity.ok(ControllerResponse.success("Cover image uploaded."));
+  }
+
+  @GetMapping("search")
+  public ResponseEntity<ControllerResponse<?>> searchBooks(@RequestParam String query) {
+
+    return ResponseEntity.ok(
+        ControllerResponse.success(SEARCHED_BOOKS_FETCHED_MESSAGE, bookService.searchBooks(query)));
   }
 }
